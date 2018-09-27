@@ -1,0 +1,3 @@
+node_modules/
+app/mailgun-config.js
+dist/
