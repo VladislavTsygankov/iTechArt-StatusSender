@@ -4,7 +4,9 @@ import startWorker from './services/worker';
 const app = new Koa();
 
 startWorker(__dirname + '/workers/worker.js', (err, result) => {
-  if (err) return console.error(err);
+  if (err) {
+    return console.error(err);
+  }
   console.log('[[Second thread]]');
   console.log('Mail ', result.isMail);
 });

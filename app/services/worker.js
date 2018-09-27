@@ -7,7 +7,9 @@ const startWorker = (path, callback) => {
   });
   w.on('error', callback);
   w.on('exit', code => {
-    if (code != 0) console.error(new Error(`Worker stopped with exit code ${code}`));
+    if (code != 0) {
+      console.error(new Error(`Worker stopped with exit code ${code}`));
+    }
   });
   return w;
 };
