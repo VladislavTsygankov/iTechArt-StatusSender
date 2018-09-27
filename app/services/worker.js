@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads';
 
 const startWorker = (path, callback) => {
-  let w = new Worker(path, { workerData: null });
+  const w = new Worker(path, { workerData: null });
   w.on('message', msg => {
     callback(null, msg);
   });
