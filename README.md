@@ -1,1 +1,4 @@
-#proof-of-concept
+#StatusSender - srever
+
+    npm install 
+    npm start 
