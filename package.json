@@ -1,0 +1,26 @@
+{
+    "name": "iTechArt-StatusSender-server",
+    "version": "1.0.0",
+    "description": "npm install      npm start",
+    "main": "index.js",
+    "scripts": {
+        "start": "npm run build && npm run serve",
+        "build": "babel app -d dist",
+        "serve": "node --experimental-worker ./dist/app.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/VladislavTsygankov/iTechArt-StatusSender.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/VladislavTsygankov/iTechArt-StatusSender/issues"
+    },
+    "homepage": "https://github.com/VladislavTsygankov/iTechArt-StatusSender#readme",
+    "devDependencies": {
+        "babel-cli": "^6.26.0"
+    }
+}
