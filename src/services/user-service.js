@@ -1,5 +1,13 @@
 import User from '../db/models/user';
 
+const getUsers = async id => {
+  if (id) {
+    return await User.findById(id);
+  }
+
+  return await User.findAll();
+};
+
 const createUser = async userData => {
   const { username } = userData;
 
@@ -32,4 +40,4 @@ const updateUserById = async (id, userData) => {
   return await User.findById(id);
 };
 
-export default { createUser, removeUserById, updateUserById };
+export default { getUsers, createUser, removeUserById, updateUserById };
