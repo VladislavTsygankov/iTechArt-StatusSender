@@ -1,1 +1,9 @@
-/node-modules
+node_modules/
+dist/
+[Bb]in
+obj/
+.vs/
+
+*.user
+*.dbmdl
+*.jfm

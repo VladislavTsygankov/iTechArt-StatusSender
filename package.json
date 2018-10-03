@@ -5,8 +5,8 @@
     "main": "index.js",
     "scripts": {
         "start": "npm run build && npm run serve",
-        "build": "babel app -d dist",
-        "serve": "node --experimental-worker ./dist/app.js",
+        "build": "babel src -d dist",
+        "serve": "node --experimental-worker ./dist/web/server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -21,6 +21,24 @@
     },
     "homepage": "https://github.com/VladislavTsygankov/iTechArt-StatusSender#readme",
     "devDependencies": {
-        "babel-cli": "^6.26.0"
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.3",
+        "babel-eslint": "^10.0.1",
+        "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+        "babel-preset-stage-0": "^6.24.1",
+        "eslint": "^5.6.0"
+    },
+    "dependencies": {
+        "@koa/cors": "^2.2.2",
+        "koa": "^2.5.3",
+        "koa-bodyparser": "^4.2.1",
+        "koa-error": "^3.2.0",
+        "koa-router": "^7.4.0",
+        "koa-views": "^6.1.4",
+        "mssql": "^4.2.1",
+        "pug": "^2.0.3",
+        "sequelize": "^4.39.0",
+        "sqlite": "^3.0.0",
+        "winston": "^3.1.0"
     }
 }

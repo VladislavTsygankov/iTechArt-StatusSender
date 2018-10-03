@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="6ca860cc-223c-4528-a182-ce8836883705" ChangeDateTime="10/01/2018 12:27:39">
+    <Property Name="ElementName" Value="[dbo].[Users]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[Reminders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[UsersId]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5cda54b7-99ff-49e9-a1b6-9abe27ff37dc" ChangeDateTime="10/01/2018 12:27:48">
+    <Property Name="ElementName" Value="[dbo].[UsersId]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[Reminders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[Users]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="46427b04-7f17-465d-83a3-ed10e123b514" ChangeDateTime="10/01/2018 12:50:20">
+    <Property Name="ElementName" Value="[dbo].[ProjectUser].[UserID]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProjectUser]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="465a2050-9baf-4392-8872-2da7cd650443" ChangeDateTime="10/03/2018 13:12:54">
+    <Property Name="ElementName" Value="[dbo].[Projects].[setted_time]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Projects]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="timeForSend" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="dee5fba8-bb4e-4b7c-9681-a27996a4b4a2" ChangeDateTime="10/03/2018 13:12:58">
+    <Property Name="ElementName" Value="[dbo].[Projects].[copy_addressees]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Projects]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="copyAddressees" />
+  </Operation>
+</Operations>
