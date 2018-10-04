@@ -1,4 +1,3 @@
-import User from '../../../../db/models/user';
 import UserService from '../../../../services/user-service';
 import logger from '../../../utils/logger';
 import LoggerLevels from '../../../constants/logger-levels';
@@ -6,12 +5,7 @@ import HttpStatus from '../../../constants/http-status';
 
 const get = async ctx => {
   try {
-    if (ctx.user) {
-      ctx.body = ctx.user;
-      return;
-    }
-
-    ctx.body = await User.findAll();
+    ctx.body = await UserService.getUsers(ctx.params.id);
     logger.log(LoggerLevels.DEBUG, `Users sent: ${JSON.stringify(ctx.body)}`);
   } catch (err) {
     ctx.status = err.statusCode || err.status || 500;
@@ -44,7 +38,7 @@ const remove = async ctx => {
 const put = async ctx => {
   try {
     ctx.body = await UserService.updateUserById(ctx.params.id, ctx.request.body);
-    logger.log(LoggerLevels.DEBUG, `Updated user on id=${ctx.params.id} to ${JSON.stringify(ctx.body)}`);
+    logger.log(LoggerLevels.DEBUG, `User with id:${ctx.params.id} updated to ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = error.statusCode || error.status || 500;
     logger.log(LoggerLevels.ERROR, error);

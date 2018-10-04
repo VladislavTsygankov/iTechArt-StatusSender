@@ -1,5 +1,13 @@
 import Project from '../db/models/project';
 
+const getProject = async id => {
+  if (id) {
+    return await Project.findById(id);
+  }
+
+  return await Project.findAll();
+};
+
 const createProject = async projectData => {
   const projectName = projectData.name;
 
@@ -32,4 +40,9 @@ const updateProjectById = async (id, projectData) => {
   return await Project.findById(id);
 };
 
-export default { createProject, removeProjectById, updateProjectById };
+export default {
+  getProject,
+  createProject,
+  removeProjectById,
+  updateProjectById
+};
