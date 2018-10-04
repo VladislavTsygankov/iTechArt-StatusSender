@@ -1,8 +1,8 @@
 import Sequelize from 'sequelize';
 import DataTypes from 'sequelize';
-import sequelize from '../db-connection';
+import db from '../db-connection';
 
-const Project = sequelize.define(
+const Project = db.define(
   'project',
   {
     name: {

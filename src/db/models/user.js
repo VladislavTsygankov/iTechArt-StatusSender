@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
-import sequelize from '../db-connection';
+import db from '../db-connection';
 
-const User = sequelize.define(
+const User = db.define(
   'Users',
   {
     username: {

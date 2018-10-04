@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[StatusHistory]
 (
-	[Id] INT NOT NULL PRIMARY KEY, 
+	[Id] INT NOT NULL IDENTITY PRIMARY KEY, 
     [ProjectId] INT NOT NULL,
 	[UserId] INT NOT NULL,
     [status] CHAR(10) NOT NULL, 

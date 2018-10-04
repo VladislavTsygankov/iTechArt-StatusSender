@@ -31,7 +31,6 @@ const post = async ctx => {
 const remove = async ctx => {
   try {
     await ProjectService.removeProjectById(ctx.params.id);
-    ctx.status = 204;
     logger.log(LoggerLevels.DEBUG, `Projecet ${ctx.project.name} was removed `);
   } catch (error) {
     ctx.status = error.statusCode || error.status || 500;

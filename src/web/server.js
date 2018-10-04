@@ -15,5 +15,3 @@ db
   .catch(err => {
     logger.log(LoggerLevels.ERROR, `Connected is failed : ${err} `);
   });
-
-
