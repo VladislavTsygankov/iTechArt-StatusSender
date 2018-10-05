@@ -1,4 +1,4 @@
-import Project from '../db/models/project';
+import { Project } from '../db/models';
 
 const getProject = async id => {
   if (id) {
@@ -44,5 +44,5 @@ export default {
   getProject,
   createProject,
   removeProjectById,
-  updateProjectById
+  updateProjectById,
 };

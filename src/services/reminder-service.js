@@ -1,7 +1,7 @@
-import Reminder from '../db/models/reminder';
+import { Reminder } from '../db/models';
 
 const createReminder = async reminderData => {
-  let reminder = Reminder.findOne({ where: { ...reminderData } });
+  let reminder = await Reminder.findOne({ where: { ...reminderData } });
 
   if (!reminder) {
     reminder = new Reminder({ ...reminderData });
@@ -17,13 +17,17 @@ const removeReminder = async id => {
 };
 
 const updateReminder = async (id, reminderData) => {
-  await Reminder.update(reminderData, {
-    where: {
-      id,
-    },
-  });
+  await Reminder.update(reminderData, { where: { id } });
 
   return await Reminder.findById(id);
 };
 
-export default { createReminder, updateReminder, removeReminder };
+const getReminders = async id => {
+  if (id) {
+    return await Reminder.findAll({ where: { UserId: id } });
+  }
+
+  return await Reminder.findAll();
+};
+
+export default { getReminders, createReminder, updateReminder, removeReminder };

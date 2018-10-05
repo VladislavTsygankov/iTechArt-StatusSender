@@ -1,16 +1,10 @@
-import Reminder from '../../../../db/models/reminder';
 import ReminderService from '../../../../services/reminder-service';
 import logger from '../../../utils/logger';
 import LoggerLevels from '../../../constants/logger-levels';
 
 const get = async ctx => {
   try {
-    if (ctx.reminder) {
-      ctx.body = ctx.reminder;
-      return;
-    }
-
-    ctx.body = await Reminder.findAll();
+    ctx.body = await ReminderService.getReminders(ctx.params.id);
     logger.log(LoggerLevels.DEBUG, `Reminders sent: ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = error.statusCode || error.status || 500;
@@ -30,7 +24,7 @@ const post = async ctx => {
 
 const put = async ctx => {
   try {
-    ctx.body = ReminderService.updateReminder(ctx.params.id, ctx.request.body);
+    ctx.body = await ReminderService.updateReminder(ctx.params.id, ctx.request.body);
     logger.log(LoggerLevels.DEBUG, `Reminder with id:${ctx.params.id} updated to ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = error.statusCode || error.status || 500;

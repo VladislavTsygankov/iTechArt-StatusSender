@@ -61,9 +61,9 @@
   <ItemGroup>
     <Build Include="Reminders.sql" />
     <Build Include="Projects.sql" />
-    <Build Include="ProjectUser.sql" />
-    <Build Include="StatusHistory.sql" />
+    <Build Include="ProjectUsers.sql" />
     <Build Include="Users.sql" />
+    <Build Include="StatusHistories.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="StatusSenderDatabase.publish.xml" />

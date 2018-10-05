@@ -1,17 +1,16 @@
-import Sequelize from 'sequelize';
 import db from '../db-connection';
 
 const User = db.define(
-  'Users',
+  'User',
   {
     username: {
-      type: Sequelize.STRING,
+      type: db.Sequelize.STRING,
     },
     password: {
-      type: Sequelize.STRING,
+      type: db.Sequelize.STRING,
     },
     role: {
-      type: Sequelize.STRING,
+      type: db.Sequelize.STRING,
     },
   },
   {

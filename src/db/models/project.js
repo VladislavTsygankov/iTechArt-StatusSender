@@ -1,27 +1,27 @@
-import Sequelize from 'sequelize';
 import DataTypes from 'sequelize';
 import db from '../db-connection';
 
+
 const Project = db.define(
-  'project',
+  'Project',
   {
     name: {
-      type: Sequelize.STRING,
+      type: db.Sequelize.STRING,
     },
     timeForSend: {
       type: DataTypes.TIME,
     },
     greeting: {
-      type: Sequelize.STRING,
+      type: db.Sequelize.STRING,
     },
     signature: {
-      type: Sequelize.STRING,
+      type: db.Sequelize.STRING,
     },
     addressees: {
-      type: Sequelize.STRING,
+      type: db.Sequelize.STRING,
     },
     copyAddressees: {
-      type: Sequelize.STRING,
+      type: db.Sequelize.STRING,
     },
   },
   {
