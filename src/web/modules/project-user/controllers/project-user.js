@@ -13,7 +13,12 @@ const post = async ctx => {
 };
 
 const get = async ctx => {
-  try {    
+  try {
+    if (ctx.params.flag === 'byuid') {
+      ctx.body = await ProjectUserService.getProjectsByUserId(ctx.params.id);
+    } else if (ctx.params.flag === 'bypid') {
+      ctx.body = await ProjectUserService.getUsersByProjectId(ctx.params.id);
+    }
     logger.log(LoggerLevels.DEBUG, `relations sent: ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = error.status || error.status || 500;

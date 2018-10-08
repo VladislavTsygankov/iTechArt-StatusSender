@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { Reminder } from '../db/models';
 
 const createReminder = async reminderData => {
@@ -24,10 +25,18 @@ const updateReminder = async (id, reminderData) => {
 
 const getReminders = async id => {
   if (id) {
-    return await Reminder.findAll({ where: { UserId: id } });
+    return await Reminder.findAll({ where: { UserId: id } }).map(reminder => {
+      return {
+        time: moment(reminder.value).format('hh:mm'),
+      };
+    });
   }
 
-  return await Reminder.findAll();
+  return await Reminder.findAll().map(reminder => {
+    return {
+      time: moment(reminder.value).format('hh:mm'),
+    };
+  });
 };
 
 export default { getReminders, createReminder, updateReminder, removeReminder };

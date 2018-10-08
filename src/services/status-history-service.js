@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { StatusHistory, Project, User } from '../db/models';
 
 const createStatus = async statusInfo => {
@@ -6,7 +7,7 @@ const createStatus = async statusInfo => {
 
   let statusRecord = await StatusHistory.findOne({
     where: {
-      date: `${dateNow.getUTCFullYear()}-${dateNow.getUTCMonth()}-${dateNow.getUTCDate()}`,
+      date: `${dateNow.getFullYear()}-${dateNow.getMonth()}-${dateNow.getDate()}`,
       time: `${dateNow.getUTCHours()}:${dateNow.getUTCMinutes()}:${dateNow.getUTCSeconds()}`,
       UserId,
       ProjectId,
@@ -35,8 +36,8 @@ const getHistory = async () => {
       status: foundStatus.status,
       project: foundStatus.Project.name,
       username: foundStatus.User.username,
-      date: foundStatus.date,
-      time: foundStatus.time,
+      date: moment(foundStatus.date).format('MMMM Do YYYY'),
+      time: moment(foundStatus.time).format('hh:mm:ss a'),
     };
   });
 };
@@ -47,8 +48,8 @@ const getHistoryByUserId = async id => {
       return {
         status: foundStatus.status,
         project: foundStatus.Project.name,
-        date: foundStatus.date,
-        time: foundStatus.time,
+        date: moment(foundStatus.date).format('MMMM Do YYYY'),
+        time: moment(foundStatus.time).format('hh:mm:ss a'),
       };
     },
   );

@@ -1,11 +1,30 @@
+import moment from 'moment';
 import { Project } from '../db/models';
 
 const getProject = async id => {
   if (id) {
-    return await Project.findById(id);
+    const project = await Project.findById(id);
+    
+    return {
+      name: project.name,
+      timeForSend: moment(project.timeForSend).format('hh:mm'),
+      addressees: project.addressees,
+      copyAddressees: project.copyAddressees,
+      greeting: project.greeting,
+      signature: project.signature,
+    };
   }
 
-  return await Project.findAll();
+  return await Project.findAll().map(project => {
+    return {
+      name: project.name,
+      timeForSend: moment(project.timeForSend).format('hh:mm'),
+      addressees: project.addressees,
+      copyAddressees: project.copyAddressees,
+      greeting: project.greeting,
+      signature: project.signature,
+    };
+  });
 };
 
 const createProject = async projectData => {

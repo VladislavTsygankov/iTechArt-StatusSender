@@ -5,6 +5,6 @@ const router = new Router({ prefix: '/projectuser' });
 
 router
   .post('/', ProjectUserController.post)
-  .get('?:userId', ProjectUserController.get);
+  .get('/:flag/:id', ProjectUserController.get);
 
 export default router.routes();

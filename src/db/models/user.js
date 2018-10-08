@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import db from '../db-connection';
 
 const User = db.define(
@@ -14,6 +15,12 @@ const User = db.define(
     },
   },
   {
+    hooks: {
+      beforeCreate: user => {
+        const salt = bcrypt.genSaltSync();
+        user.dataValues.password = bcrypt.hashSync(user.password, salt);
+      },
+    },
     createdAt: false,
     updatedAt: false,
   },
