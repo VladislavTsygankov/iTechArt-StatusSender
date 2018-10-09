@@ -1,6 +1,6 @@
-import AuthenticationService from '../../../../services/auth-service';
-import logger from '../../../utils/logger';
-import LoggerLevels from '../../../constants/logger-levels';
+import AuthenticationService from '../../../services/auth-service';
+import logger from '../../utils/logger';
+import LoggerLevels from '../../constants/logger-levels';
 
 const signIn = async ctx => {
   try {

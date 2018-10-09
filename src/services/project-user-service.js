@@ -1,13 +1,19 @@
 import { User, Project, ProjectUser } from '../db/models';
 
 const getUsersByProjectId = async id => {
-  return await ProjectUser.findAll({ where: { ProjectId: id }, include: [{ model: User }] }).map(foundedRelation => {
+  return await ProjectUser.findAll({
+    where: { ProjectId: id },
+    include: [{ model: User, attributes: ['Id', 'username'] }],
+  }).map(foundedRelation => {
     return foundedRelation.User;
   });
 };
 
 const getProjectsByUserId = async id => {
-  return await ProjectUser.findAll({ where: { UserId: id }, include: [{ model: Project }] }).map(foundedRelation => {
+  return await ProjectUser.findAll({
+    where: { UserId: id },
+    include: [{ model: Project, attributes: ['name'] }],
+  }).map(foundedRelation => {
     return foundedRelation.Project;
   });
 };

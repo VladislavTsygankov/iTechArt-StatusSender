@@ -1,29 +1,19 @@
-import moment from 'moment';
+import momentService from './moment-service';
 import { Project } from '../db/models';
 
 const getProject = async id => {
   if (id) {
     const project = await Project.findById(id);
+
+    project.timeForSend = momentService.convertTime(project.timeForSend);
     
-    return {
-      name: project.name,
-      timeForSend: moment(project.timeForSend).format('hh:mm'),
-      addressees: project.addressees,
-      copyAddressees: project.copyAddressees,
-      greeting: project.greeting,
-      signature: project.signature,
-    };
+    return project;
   }
 
   return await Project.findAll().map(project => {
-    return {
-      name: project.name,
-      timeForSend: moment(project.timeForSend).format('hh:mm'),
-      addressees: project.addressees,
-      copyAddressees: project.copyAddressees,
-      greeting: project.greeting,
-      signature: project.signature,
-    };
+    project.timeForSend = momentService.convertTime(project.timeForSend);
+
+    return project;
   });
 };
 
@@ -42,21 +32,16 @@ const createProject = async projectData => {
 };
 
 const removeProjectById = async id => {
-  return await Project.destroy({
-    where: {
-      Id: id,
-    },
-  });
+  return await Project.destroy({ where: { Id: id } });
 };
 
 const updateProjectById = async (id, projectData) => {
-  await Project.update(projectData, {
-    where: {
-      Id: id,
-    },
-  });
+  await Project.update(projectData, { where: { Id: id } });
+  const project = await Project.findById(id);
 
-  return await Project.findById(id);
+  project.timeForSend = momentService.convertTime(project.timeForSend);
+
+  return project;
 };
 
 export default {

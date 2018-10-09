@@ -1,10 +1,16 @@
 import ReminderService from '../../../../services/reminder-service';
 import logger from '../../../utils/logger';
 import LoggerLevels from '../../../constants/logger-levels';
+import HttStatus from '../../../constants/http-status';
 
 const get = async ctx => {
   try {
-    ctx.body = await ReminderService.getReminders(ctx.params.id);
+    if (ctx.params.id) {
+      ctx.body = await ReminderService.getRemindersByUserId(ctx.params.id);
+    } else {
+      ctx.body = await ReminderService.getReminders();
+    }
+    
     logger.log(LoggerLevels.DEBUG, `Reminders sent: ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = error.statusCode || error.status || 500;
@@ -35,6 +41,7 @@ const put = async ctx => {
 const remove = async ctx => {
   try {
     await ReminderService.removeReminder(ctx.params.id);
+    ctx.body = HttStatus.OK;
     logger.log(LoggerLevels.DEBUG, 'Reminder was removed');
   } catch (error) {
     ctx.status = error.statusCode || error.status || 500;

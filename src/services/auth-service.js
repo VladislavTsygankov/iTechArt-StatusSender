@@ -9,11 +9,13 @@ const signIn = async userInfo => {
     throw new Error('Incorrect username');
   }
 
-  if (bcrypt.compareSync(userInfo.password, user.password)) {
-    return jwtService.genToken(user.username);
-  } else {
+  if (!bcrypt.compareSync(userInfo.password, user.password)) {
     throw new Error('Invalid password');
   }
+
+  return {
+    token: jwtService.genToken(user.username),
+  };
 };
 
 export default { signIn };

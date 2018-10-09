@@ -1,14 +1,13 @@
-import moment from 'moment';
+import momentService from './moment-service';
 import { StatusHistory, Project, User } from '../db/models';
 
 const createStatus = async statusInfo => {
   const { UserId, ProjectId, status } = statusInfo;
-  const dateNow = new Date();
 
   let statusRecord = await StatusHistory.findOne({
     where: {
-      date: `${dateNow.getFullYear()}-${dateNow.getMonth()}-${dateNow.getDate()}`,
-      time: `${dateNow.getUTCHours()}:${dateNow.getUTCMinutes()}:${dateNow.getUTCSeconds()}`,
+      date: momentService.getCurrentDate(),
+      time: momentService.getCurrentUTCTime(),
       UserId,
       ProjectId,
       status,
@@ -17,8 +16,8 @@ const createStatus = async statusInfo => {
 
   if (!statusRecord) {
     statusRecord = new StatusHistory({
-      date: `${dateNow.getUTCFullYear()}-${dateNow.getUTCMonth()}-${dateNow.getUTCDate()}`,
-      time: `${dateNow.getUTCHours()}:${dateNow.getUTCMinutes()}:${dateNow.getUTCSeconds()}`,
+      date: momentService.getCurrentDate(),
+      time: momentService.getCurrentUTCTime(),
       UserId,
       ProjectId,
       status,
@@ -31,28 +30,28 @@ const createStatus = async statusInfo => {
 };
 
 const getHistory = async () => {
-  return await StatusHistory.findAll({ include: [{ model: Project }, { model: User }] }).map(foundStatus => {
-    return {
-      status: foundStatus.status,
-      project: foundStatus.Project.name,
-      username: foundStatus.User.username,
-      date: moment(foundStatus.date).format('MMMM Do YYYY'),
-      time: moment(foundStatus.time).format('hh:mm:ss a'),
-    };
+  return await StatusHistory.findAll({
+    attributes: ['status', 'date', 'time'],
+    include: [{ model: Project, attributes: ['name'] }, { model: User, attributes: ['username'] }],
+  }).map(statusRecord => {
+    statusRecord.date = momentService.convertDate(statusRecord.date);
+    statusRecord.time = momentService.convertTime(statusRecord.time);
+
+    return statusRecord;
   });
 };
 
 const getHistoryByUserId = async id => {
-  return await StatusHistory.findAll({ where: { UserId: id }, include: [{ model: Project }] }).map(
-    foundStatus => {
-      return {
-        status: foundStatus.status,
-        project: foundStatus.Project.name,
-        date: moment(foundStatus.date).format('MMMM Do YYYY'),
-        time: moment(foundStatus.time).format('hh:mm:ss a'),
-      };
-    },
-  );
+  return await StatusHistory.findAll({
+    attributes: ['status', 'date', 'time'],
+    where: { UserId: id },
+    include: [{ model: Project, attributes: ['name'] }],
+  }).map(statusRecord => {
+    statusRecord.date = momentService.convertDate(statusRecord.date);
+    statusRecord.time = momentService.convertTime(statusRecord.time);
+
+    return statusRecord;
+  });
 };
 
 export default { createStatus, getHistory, getHistoryByUserId };

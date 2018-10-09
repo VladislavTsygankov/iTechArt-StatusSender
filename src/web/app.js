@@ -3,22 +3,20 @@ import cors from '@koa/cors';
 import bodyParser from 'koa-bodyparser';
 import error from 'koa-error';
 import views from 'koa-views';
-import passport from 'koa-passport';
 import config from './config';
 import logger from './utils/logger';
 import LoggerLevels from './constants/logger-levels';
-import routers from './modules';
-import './modules/authentication/strategy/bearer-strategy';
+import apiRouters from './modules';
+import authRouters from './authentication';
+import './authentication/strategy/bearer-strategy';
 
 const app = new Koa();
 
 app.use(cors());
 app.use(bodyParser());
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(routers);
+app.use(authRouters);
+app.use(apiRouters);
 
 app.use(
   error({
