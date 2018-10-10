@@ -7,10 +7,8 @@ const createStatus = async statusInfo => {
   let statusRecord = await StatusHistory.findOne({
     where: {
       date: momentService.getCurrentDate(),
-      time: momentService.getCurrentUTCTime(),
       UserId,
       ProjectId,
-      status,
     },
   });
 
@@ -25,7 +23,7 @@ const createStatus = async statusInfo => {
 
     return await statusRecord.save();
   } else {
-    throw new Error('this status is already exist');
+    throw new Error('This status is already exist');
   }
 };
 

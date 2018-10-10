@@ -23,13 +23,7 @@ const createUser = async userData => {
 };
 
 const removeUserById = async id => {
-  const user = await User.findById(id);
-
-  if (user) {
-    return await User.destroy({ where: { Id: id } });
-  } else {
-    throw new Error('This user is not available');
-  }
+  return await User.destroy({ where: { Id: id } });
 };
 
 const updateUserById = async (id, userData) => {

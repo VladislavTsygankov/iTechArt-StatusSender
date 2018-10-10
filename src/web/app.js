@@ -12,7 +12,9 @@ import './authentication/strategy/bearer-strategy';
 
 const app = new Koa();
 
-app.use(cors());
+app.keys = [config.env.jwt.secret];
+
+app.use(cors({origin: 'http://localhost:8080'}));
 app.use(bodyParser());
 
 app.use(authRouters);
