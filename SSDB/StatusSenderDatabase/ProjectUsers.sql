@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[ProjectUser]
+﻿CREATE TABLE [dbo].[ProjectUsers]
 (
 	[Id] INT NOT NULL IDENTITY PRIMARY KEY, 
 	[ProjectId] INT NOT NULL,

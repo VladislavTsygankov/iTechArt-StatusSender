@@ -1,10 +1,9 @@
 import moment from 'moment';
 
-const DATA_FORMAT = 'DD/MM/YYYY';
 const TIME_FORMAT = 'hh:mm:ss';
 
 const convertDate = date => {
-  return moment(date).format(DATA_FORMAT);
+  return moment(date);
 };
 
 const convertTime = time => {
@@ -12,15 +11,17 @@ const convertTime = time => {
 };
 
 const getCurrentDate = () => {
-  const date = new Date();
-
-  return convertDate(`${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`);
+  return moment().utc();
 };
 
 const getCurrentUTCTime = () => {
-  const date = new Date();
-
-  return `${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`;
+  return moment()
+    .utc()
+    .format(TIME_FORMAT);
 };
 
-export default { convertTime, convertDate, getCurrentUTCTime, getCurrentDate };
+const checkWeekend = () => {
+  return moment().day() === 0 || moment().day() === 6;
+};
+
+export default { convertTime, convertDate, getCurrentUTCTime, getCurrentDate, checkWeekend };

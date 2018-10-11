@@ -1,11 +1,11 @@
 import momentService from './moment-service';
 import { Reminder } from '../db/models';
 
-const createReminder = async reminderData => {
-  let reminder = await Reminder.findOne({ where: { ...reminderData } });
+const createReminder = async (value, id) => {
+  let reminder = await Reminder.findOne({ where: { value, id } });
 
   if (!reminder) {
-    reminder = new Reminder({ ...reminderData });
+    reminder = new Reminder({ value, id });
 
     return await reminder.save();
   } else {
@@ -23,20 +23,12 @@ const updateReminder = async (id, reminderData) => {
   return await Reminder.findOne({ attributes: ['Id', 'value'], where: { id } });
 };
 
-const getReminders = async () => {
-  return await Reminder.findAll({ attributes: ['Id', 'value'] }).map(reminder => {
+const getReminders = async id => {
+  return await Reminder.findAll({ where: { UserId: id } }).map(reminder => {
     reminder.value = momentService.convertTime(reminder.value);
 
     return reminder;
   });
 };
 
-const getRemindersByUserId = async id => {
-  return await Reminder.findAll({ attributes: ['Id', 'value'], where: { UserId: id } }).map(reminder => {
-    reminder.value = momentService.convertTime(reminder.value);
-
-    return reminder;
-  });
-};
-
-export default { getReminders, createReminder, updateReminder, removeReminder, getRemindersByUserId };
+export default { getReminders, createReminder, updateReminder, removeReminder };

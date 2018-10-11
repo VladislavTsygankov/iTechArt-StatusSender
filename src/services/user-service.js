@@ -1,11 +1,17 @@
-import { User } from '../db/models';
+import bcrypt from 'bcryptjs';
+import { User, ProjectUser } from '../db/models';
 
-const getUsers = async id => {
-  if (id) {
-    return await User.findById(id, { attributes: ['Id', 'username', 'role'] });
-  }
-
+const getUsers = async () => {
   return await User.findAll({ attributes: ['Id', 'username', 'role'] });
+};
+
+const getUsersByProjectId = async id => {
+  return await ProjectUser.findAll({
+    where: { ProjectId: id },
+    include: [{ model: User, attributes: ['username', 'Id'] }],
+  }).map(foundRelation => {
+    return foundRelation.User;
+  });
 };
 
 const createUser = async userData => {
@@ -26,10 +32,17 @@ const removeUserById = async id => {
   return await User.destroy({ where: { Id: id } });
 };
 
-const updateUserById = async (id, userData) => {
-  await User.update(userData, { where: { Id: id } });
+const changePassword = async (id, password) => {
+  password = bcrypt.hashSync(password);
+  await User.update({ password }, { where: { Id: id } });
 
   return await User.findOne({ attributes: ['Id', 'username', 'role'], where: { Id: id } });
 };
 
-export default { getUsers, createUser, removeUserById, updateUserById };
+export default {
+  getUsers,
+  createUser,
+  removeUserById,
+  changePassword,
+  getUsersByProjectId,
+};

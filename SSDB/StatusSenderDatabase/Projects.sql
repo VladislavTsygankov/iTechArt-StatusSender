@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [dbo].[Projects]
 (
     [Id] INT NOT NULL IDENTITY PRIMARY KEY, 
-    [name] NVARCHAR(50) NOT NULL,  
-    [timeForSend] TIME NOT NULL,
-    [greeting] NVARCHAR(50) NULL, 
-    [signature] NVARCHAR(50) NULL, 
-    [addressees] NVARCHAR(50) NOT NULL,
-    [copyAddressees] NVARCHAR(50) NULL
+    [Name] NVARCHAR(50) NOT NULL,  
+    [TimeForSend] TIME NOT NULL,
+    [Greeting] NVARCHAR(50) NULL, 
+    [Signature] NVARCHAR(50) NULL, 
+    [Addressees] NVARCHAR(200) NOT NULL,
+    [CopyAddressees] NVARCHAR(200) NULL
 )

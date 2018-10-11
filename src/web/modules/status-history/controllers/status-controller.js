@@ -1,3 +1,4 @@
+import HttpStatus from 'http-status';
 import StatusService from '../../../../services/status-history-service';
 import logger from '../../../utils/logger';
 import LoggerLevels from '../../../constants/logger-levels';
@@ -7,22 +8,22 @@ const post = async ctx => {
     ctx.body = await StatusService.createStatus(ctx.request.body);
     logger.log(LoggerLevels.DEBUG, `Status was created seccesfully ${JSON.stringify(ctx.body)}`);
   } catch (error) {
-    ctx.status = error.status || 500;
+    ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
     logger.log(LoggerLevels.ERROR, error);
   }
 };
 
 const get = async ctx => {
   try {
-    if (ctx.params.uid) {
-      ctx.body = await StatusService.getHistoryByUserId(ctx.params.uid);
-    } else {
+    if (ctx.user.role === 'admin') {
       ctx.body = await StatusService.getHistory();
+    } else {
+      ctx.body = await StatusService.getHistoryByUserId(ctx.user.id);
     }
 
     logger.log(LoggerLevels.DEBUG, `Hostory sent: ${JSON.stringify(ctx.body)}`);
   } catch (error) {
-    ctx.status = error.status || 500;
+    ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
     logger.log(LoggerLevels.ERROR, error);
   }
 };

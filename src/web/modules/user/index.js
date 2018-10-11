@@ -1,6 +1,5 @@
 import Router from 'koa-router';
 import userController from './controllers/user-controller';
-import { findUser } from './handlers/user-handler';
 
 const router = new Router({
   prefix: '/users',
@@ -8,10 +7,9 @@ const router = new Router({
 
 router
   .get('/', userController.get)
+  .get('/projects',userController.getUsersByProjectId )
   .post('/', userController.post)
-  .param('id', findUser)
   .delete('/:id', userController.remove)
-  .put('/:id', userController.put)
-  .get('/:id', userController.get);
+  .put('/', userController.put);
 
 export default router.routes();

@@ -3,6 +3,7 @@ import path from 'path';
 const env = {
   PORT: 3001,
   MODE: 'development',
+  whitelist: ['http://localhost:8080'],
   jwt: {
     secret: 'secret-row',
   },

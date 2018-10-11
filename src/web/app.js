@@ -8,13 +8,14 @@ import logger from './utils/logger';
 import LoggerLevels from './constants/logger-levels';
 import apiRouters from './modules';
 import authRouters from './authentication';
+import checkOrigin from './helpers/check-origin';
 import './authentication/strategy/bearer-strategy';
 
 const app = new Koa();
 
 app.keys = [config.env.jwt.secret];
 
-app.use(cors({origin: 'http://localhost:8080'}));
+app.use(cors({origin: checkOrigin}));
 app.use(bodyParser());
 
 app.use(authRouters);

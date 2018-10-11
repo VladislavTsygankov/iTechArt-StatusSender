@@ -12,7 +12,7 @@ const createStatus = async statusInfo => {
     },
   });
 
-  if (!statusRecord) {
+  if (!statusRecord && !momentService.checkWeekend()) {
     statusRecord = new StatusHistory({
       date: momentService.getCurrentDate(),
       time: momentService.getCurrentUTCTime(),
@@ -29,7 +29,6 @@ const createStatus = async statusInfo => {
 
 const getHistory = async () => {
   return await StatusHistory.findAll({
-    attributes: ['status', 'date', 'time'],
     include: [{ model: Project, attributes: ['name'] }, { model: User, attributes: ['username'] }],
   }).map(statusRecord => {
     statusRecord.date = momentService.convertDate(statusRecord.date);
@@ -41,7 +40,6 @@ const getHistory = async () => {
 
 const getHistoryByUserId = async id => {
   return await StatusHistory.findAll({
-    attributes: ['status', 'date', 'time'],
     where: { UserId: id },
     include: [{ model: Project, attributes: ['name'] }],
   }).map(statusRecord => {
