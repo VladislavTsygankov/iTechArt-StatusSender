@@ -8,6 +8,4 @@ const sequelize = new Sequelize(
   databaseConfig.PARAMS,
 );
 
-sequelize.sync();
-
 export default sequelize;
