@@ -5,13 +5,13 @@ const User = db.define(
   'User',
   {
     username: {
-      type: db.Sequelize.STRING,
+      type: db.Sequelize.STRING(50),
     },
     password: {
-      type: db.Sequelize.STRING,
+      type: db.Sequelize.STRING(100),
     },
     role: {
-      type: db.Sequelize.STRING,
+      type: db.Sequelize.STRING(50),
     },
   },
   {
