@@ -18,7 +18,7 @@ const compareArrays = (arr1, arr2) => {
   return arr1.filter(i => arr2.indexOf(i) < 0).concat(arr2.filter(i => arr1.indexOf(i) < 0));
 };
 
-const compareRelations = async (projectId, membersList) => {
+const compareAndUpdateRelations = async (projectId, membersList) => {
   const currentProjectRelations = await ProjectUser.findAll({
     where: { ProjectId: projectId },
     attributes: ['UserId'],
@@ -41,4 +41,4 @@ const compareRelations = async (projectId, membersList) => {
   }
 };
 
-export default { createRelation, removeRelation, compareRelations };
+export default { createRelation, removeRelation, compareAndUpdateRelations };

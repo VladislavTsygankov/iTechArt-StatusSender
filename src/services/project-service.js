@@ -71,7 +71,7 @@ const updateProjectById = async (id, projectData) => {
     return +member;
   });
 
-  ProjectUserService.compareRelations(project.id, membersList);
+  ProjectUserService.compareAndUpdateRelations(project.id, membersList);
 
   return project;
 };
