@@ -1,4 +1,5 @@
 import momentService from './moment-service';
+import ProjectUserService from './project-user-service';
 import { Project, ProjectUser } from '../db/models';
 
 const getProjects = async () => {
@@ -23,6 +24,10 @@ const getProjectsByUserId = async id => {
   });
 };
 
+const removeProjectById = async id => {
+  return await Project.destroy({ where: { Id: id } });
+};
+
 const createProject = async projectData => {
   const projectName = projectData.name;
   const { members } = projectData;
@@ -43,27 +48,13 @@ const createProject = async projectData => {
     const createdProject = await Project.findOne({ where: { name: projectName } });
 
     membersList.forEach(member => {
-      createRelation(member, createdProject.id);
+      ProjectUserService.createRelation(member, createdProject.id);
     });
 
     return project;
   } else {
     throw new Error(`Project ${projectName} is already exist`);
   }
-};
-
-const createRelation = async (userId, projectId) => {
-  let relation = await ProjectUser.findOne({ where: { UserId: userId, ProjectId: projectId } });
-
-  if (!relation) {
-    relation = new ProjectUser({ UserId: userId, ProjectId: projectId });
-
-    await relation.save();
-  }
-};
-
-const removeProjectById = async id => {
-  return await Project.destroy({ where: { Id: id } });
 };
 
 const updateProjectById = async (id, projectData) => {
@@ -76,13 +67,11 @@ const updateProjectById = async (id, projectData) => {
 
   // вот эта штука временная, просто через постман кидается строка а не массив,
   // когда буду кидать с клиент массивом будет норм
-  const membersList = members.split(',').map(member => {
+  let membersList = members.split(',').map(member => {
     return +member;
   });
 
-  membersList.forEach(member => {
-    createRelation(member, id);
-  });
+  ProjectUserService.compareRelations(project.id, membersList);
 
   return project;
 };

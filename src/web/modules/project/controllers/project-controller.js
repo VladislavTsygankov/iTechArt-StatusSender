@@ -57,7 +57,7 @@ const remove = async ctx => {
 const put = async ctx => {
   try {
     ctx.body = await ProjectService.updateProjectById(ctx.params.id, ctx.request.body);
-    logger.log(LoggerLevels.DEBUG, `Project ${ctx.project.name} was updated to ${JSON.stringify(ctx.body)}`);
+    logger.log(LoggerLevels.DEBUG, `Project ${ctx.body.name} was updated to ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
     logger.log(LoggerLevels.ERROR, error);
