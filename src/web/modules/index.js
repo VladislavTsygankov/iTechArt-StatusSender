@@ -11,7 +11,6 @@ const router = new Router({ prefix: '/api' });
 
 router.use(passport.authenticate('bearer', { session: false }));
 router.use(findUser);
-router.allowedMethods();
 
 router.use(user);
 router.use(project);

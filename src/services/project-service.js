@@ -55,8 +55,8 @@ const createProject = async projectData => {
 };
 
 const updateProjectById = async (id, projectData) => {
-  await Project.update(projectData, { where: { Id: id }, returning: true });
-  
+  await Project.update(projectData, { where: { Id: id } });
+
   const { members } = projectData;
   const project = await Project.findById(id);
 
