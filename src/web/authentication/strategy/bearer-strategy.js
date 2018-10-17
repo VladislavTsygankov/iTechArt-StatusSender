@@ -7,7 +7,7 @@ import { User } from '../../../db/models';
 
 passport.use(
   new BearerStrategy((token, done) => {
-    User.findOne({ where: { username: jwtService.verify(token) } })
+    User.findOne({ where: { Id: jwtService.verify(token) } })
       .then(user => {
         if (!user) {
           logger.log(LoggerLevels.DEBUG, 'Incorrect token');

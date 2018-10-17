@@ -7,7 +7,7 @@ const router = new Router({
 
 router
   .get('/', userController.get)
-  .get('/projects',userController.getUsersByProjectId )
+  .get('/:projectId/projects',userController.getUsersByProjectId)
   .post('/', userController.post)
   .delete('/:id', userController.remove)
   .put('/', userController.put);

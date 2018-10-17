@@ -42,13 +42,10 @@ const createProject = async projectData => {
   let project = await Project.findOne({ where: { name: projectName } });
 
   if (!project) {
-    project = new Project({ ...projectData });
-    await project.save();
-
-    const createdProject = await Project.findOne({ where: { name: projectName } });
+    project = await Project.create({ ...projectData });
 
     membersList.forEach(member => {
-      ProjectUserService.createRelation(member, createdProject.id);
+      ProjectUserService.createRelation(member, project.dataValues.id);
     });
 
     return project;
@@ -58,8 +55,8 @@ const createProject = async projectData => {
 };
 
 const updateProjectById = async (id, projectData) => {
-  await Project.update(projectData, { where: { Id: id } });
-
+  await Project.update(projectData, { where: { Id: id }, returning: true });
+  
   const { members } = projectData;
   const project = await Project.findById(id);
 
@@ -71,7 +68,7 @@ const updateProjectById = async (id, projectData) => {
     return +member;
   });
 
-  ProjectUserService.compareAndUpdateRelations(project.id, membersList);
+  ProjectUserService.compareAndUpdateRelations(id, membersList);
 
   return project;
 };

@@ -4,6 +4,12 @@ import db from '../db-connection';
 const User = db.define(
   'User',
   {
+    id: {
+      type: db.Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+      field: 'Id',
+    },
     username: {
       type: db.Sequelize.STRING(50),
     },

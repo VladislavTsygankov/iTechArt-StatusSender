@@ -10,12 +10,12 @@ Reminder.belongsTo(User);
 StatusHistory.belongsTo(Project);
 StatusHistory.belongsTo(User);
 
-User.hasMany(StatusHistory, { onDelete: 'CASCADE' });
-User.hasMany(Reminder, { onDelete: 'CASCADE' });
-User.hasMany(ProjectUser, { onDelete: 'CASCADE' });
+User.hasMany(StatusHistory);
+User.hasMany(Reminder);
+User.hasMany(ProjectUser);
 
-Project.hasMany(StatusHistory, { onDelete: 'CASCADE' });
-Project.hasMany(ProjectUser, { onDelete: 'CASCADE' });
+Project.hasMany(StatusHistory);
+Project.hasMany(ProjectUser);
 
 
 export { User, Reminder, ProjectUser, Project, StatusHistory };

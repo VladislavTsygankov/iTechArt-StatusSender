@@ -1,10 +1,15 @@
 import DataTypes from 'sequelize';
 import db from '../db-connection';
 
-
 const Project = db.define(
   'Project',
   {
+    id: {
+      type: db.Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+      field:'Id'
+    },
     name: {
       type: db.Sequelize.STRING(50),
     },

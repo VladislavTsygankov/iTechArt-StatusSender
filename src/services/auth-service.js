@@ -14,7 +14,7 @@ const signIn = async userInfo => {
   }
 
   return {
-    token: jwtService.genToken(user.username),
+    token: jwtService.genToken(user.id),
   };
 };
 

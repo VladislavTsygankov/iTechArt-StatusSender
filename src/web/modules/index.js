@@ -11,6 +11,7 @@ const router = new Router({ prefix: '/api' });
 
 router.use(passport.authenticate('bearer', { session: false }));
 router.use(findUser);
+router.allowedMethods();
 
 router.use(user);
 router.use(project);
@@ -18,4 +19,4 @@ router.use(reminder);
 router.use(status_history);
 router.use(authenticate);
 
-export default router.routes();
+export default router;

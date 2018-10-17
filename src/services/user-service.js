@@ -8,7 +8,7 @@ const getUsers = async () => {
 const getUsersByProjectId = async id => {
   return await ProjectUser.findAll({
     where: { ProjectId: id },
-    include: [{ model: User, attributes: ['username', 'Id'] }],
+    include: [{ model: User, attributes: ['username', 'id'] }],
   }).map(foundRelation => {
     return foundRelation.User;
   });
@@ -20,9 +20,7 @@ const createUser = async userData => {
   let user = await User.findOne({ where: { username: username } });
 
   if (!user) {
-    user = new User({ ...userData });
-
-    return await user.save();
+    return await User.create({ ...userData });
   } else {
     throw new Error('User is already exist');
   }

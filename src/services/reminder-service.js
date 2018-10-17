@@ -2,12 +2,10 @@ import momentService from './moment-service';
 import { Reminder } from '../db/models';
 
 const createReminder = async (value, id) => {
-  let reminder = await Reminder.findOne({ where: { value, id } });
+  let reminder = await Reminder.findOne({ where: { value, UserId: id } });
 
   if (!reminder) {
-    reminder = new Reminder({ value, id });
-
-    return await reminder.save();
+    return  await Reminder.create({ value, UserId: id });
   } else {
     throw new Error('Reminder is already exist');
   }
@@ -17,8 +15,8 @@ const removeReminder = async id => {
   return await Reminder.destroy({ where: { id } });
 };
 
-const updateReminder = async (id, reminderData) => {
-  await Reminder.update(reminderData, { where: { id } });
+const updateReminder = async (id, value, userId) => {
+  await Reminder.update({ value, UserId: userId }, { where: { id } });
 
   return await Reminder.findOne({ attributes: ['Id', 'value'], where: { id } });
 };

@@ -6,6 +6,7 @@ import LoggerLevels from '../../../constants/logger-levels';
 const post = async ctx => {
   try {
     ctx.body = await StatusService.createStatus(ctx.request.body);
+    ctx.status = HttpStatus.CREATED;
     logger.log(LoggerLevels.DEBUG, `Status was created seccesfully ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -21,6 +22,7 @@ const get = async ctx => {
       ctx.body = await StatusService.getHistoryByUserId(ctx.user.id);
     }
 
+    ctx.status = HttpStatus.OK;
     logger.log(LoggerLevels.DEBUG, `Hostory sent: ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;

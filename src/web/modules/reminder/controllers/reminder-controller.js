@@ -6,6 +6,7 @@ import LoggerLevels from '../../../constants/logger-levels';
 const get = async ctx => {
   try {
     ctx.body = await ReminderService.getReminders(ctx.user.id);
+    ctx.status = HttpStatus.OK;
     logger.log(LoggerLevels.DEBUG, `Reminders sent: ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -15,7 +16,8 @@ const get = async ctx => {
 
 const post = async ctx => {
   try {
-    ctx.body = await ReminderService.createReminder(ctx.request.body, ctx.user.id);
+    ctx.body = await ReminderService.createReminder(ctx.request.body.value, ctx.user.id);
+    ctx.status = HttpStatus.OK;
     logger.log(LoggerLevels.DEBUG, 'New reminder created');
   } catch (error) {
     ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -25,7 +27,8 @@ const post = async ctx => {
 
 const put = async ctx => {
   try {
-    ctx.body = await ReminderService.updateReminder(ctx.params.id, ctx.request.body);
+    ctx.body = await ReminderService.updateReminder(ctx.params.id, ctx.request.body.value, ctx.user.id);
+    ctx.status = HttpStatus.ACCEPTED;
     logger.log(LoggerLevels.DEBUG, `Reminder with id:${ctx.params.id} updated to ${JSON.stringify(ctx.body)}`);
   } catch (error) {
     ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -36,7 +39,7 @@ const put = async ctx => {
 const remove = async ctx => {
   try {
     await ReminderService.removeReminder(ctx.params.id);
-    ctx.status = HttpStatus.OK;
+    ctx.status = HttpStatus.NO_CONTENT;
     logger.log(LoggerLevels.DEBUG, 'Reminder was removed');
   } catch (error) {
     ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
