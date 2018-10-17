@@ -13,15 +13,13 @@ const createStatus = async statusInfo => {
   });
 
   if (!statusRecord && !momentService.checkWeekend()) {
-    statusRecord = new StatusHistory({
+    return await StatusHistory.create({
       date: momentService.getCurrentDate(),
       time: momentService.getCurrentUTCTime(),
       UserId,
       ProjectId,
       status,
     });
-
-    return await statusRecord.save();
   } else {
     throw new Error('This status is already exist');
   }

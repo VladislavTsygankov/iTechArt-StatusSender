@@ -4,9 +4,7 @@ const createRelation = async (userId, projectId) => {
   let relation = await ProjectUser.findOne({ where: { UserId: userId, ProjectId: projectId } });
 
   if (!relation) {
-    relation = new ProjectUser({ UserId: userId, ProjectId: projectId });
-
-    await relation.save();
+    await ProjectUser.create({ UserId: userId, ProjectId: projectId });
   }
 };
 
