@@ -14,6 +14,11 @@ const signIn = async userInfo => {
   }
 
   return {
+    user: {
+      username: user.username,
+      role: user.role,
+      id: user.id,
+    },
     token: jwtService.genToken(user.id),
   };
 };

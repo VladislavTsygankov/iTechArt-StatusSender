@@ -48,4 +48,14 @@ const getHistoryByUserId = async id => {
   });
 };
 
-export default { createStatus, getHistory, getHistoryByUserId };
+const getCurrentStatus = async (projectId, userId) => {
+  return await StatusHistory.findOne({
+    where: {
+      UserId: userId,
+      ProjectId: projectId,
+      date: momentService.getCurrentDate(),
+    },
+  });
+};
+
+export default { createStatus, getHistory, getHistoryByUserId, getCurrentStatus };
