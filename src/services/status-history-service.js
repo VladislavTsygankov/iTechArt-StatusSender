@@ -49,13 +49,20 @@ const getHistoryByUserId = async id => {
 };
 
 const getCurrentStatus = async (projectId, userId) => {
-  return await StatusHistory.findOne({
+  let status = await StatusHistory.findOne({
     where: {
       UserId: userId,
       ProjectId: projectId,
       date: momentService.getCurrentDate(),
     },
   });
+
+  if (status) {
+    status.date = momentService.convertDate(status.date);
+    status.time = momentService.convertTime(status.time);
+  }
+
+  return status;
 };
 
 export default { createStatus, getHistory, getHistoryByUserId, getCurrentStatus };
