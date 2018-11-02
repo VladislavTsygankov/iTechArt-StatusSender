@@ -3,6 +3,7 @@ dist/
 [Bb]in
 obj/
 .vs/
+.vscode/
 
 *.user
 *.dbmdl

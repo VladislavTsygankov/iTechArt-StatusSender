@@ -14,23 +14,6 @@ const getUsersByProjectId = async id => {
   });
 };
 
-const getFreeUsersByProjectId = async id => {
-  const assignedUsers = await ProjectUser.findAll({
-    where: { ProjectId: id },
-    include: [{ model: User, attributes: ['id'] }],
-  }).map(foundRelation => {
-    return foundRelation.User.id;
-  });
-
-  const freeUsers = await User.findAll({ attributes: ['role', 'id', 'username'] }).filter(user => {
-    if (assignedUsers.every(assignedUser => assignedUser !== user.id)) {
-      return user;
-    }
-  });
-
-  return freeUsers;
-};
-
 const createUser = async userData => {
   const { username } = userData;
 
@@ -60,5 +43,4 @@ export default {
   removeUserById,
   changePassword,
   getUsersByProjectId,
-  getFreeUsersByProjectId,
 };

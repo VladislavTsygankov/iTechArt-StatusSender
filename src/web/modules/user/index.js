@@ -8,7 +8,6 @@ const router = new Router({
 router
   .get('/', userController.get)
   .get('/:projectId/projects', userController.getUsersByProjectId)
-  .get('/:projectId/free_users', userController.getFreeUsersByProjectId)
   .post('/', userController.post)
   .delete('/:id', userController.remove)
   .put('/', userController.put);

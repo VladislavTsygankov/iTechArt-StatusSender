@@ -40,6 +40,7 @@
         "koa-router": "^7.4.0",
         "koa-session": "^5.9.0",
         "koa-views": "^6.1.4",
+        "lodash": "^4.17.11",
         "moment": "^2.22.2",
         "mssql": "^4.2.1",
         "passport-http-bearer": "^1.0.1",

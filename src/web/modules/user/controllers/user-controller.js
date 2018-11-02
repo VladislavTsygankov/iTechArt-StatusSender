@@ -30,17 +30,6 @@ const getUsersByProjectId = async ctx => {
   }
 };
 
-const getFreeUsersByProjectId = async ctx => {
-  try {
-    ctx.body = await UserService.getFreeUsersByProjectId(ctx.params.projectId);
-    ctx.status = HttpStatus.OK;
-    logger.log(LoggerLevels.DEBUG, `Users sent: ${JSON.stringify(ctx.body)}`);
-  } catch (err) {
-    ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
-    logger.log(LoggerLevels.ERROR, err);
-  }
-};
-
 const post = async ctx => {
   try {
     ctx.body = await UserService.createUser(ctx.request.body);
@@ -81,5 +70,4 @@ export default {
   remove,
   put,
   getUsersByProjectId,
-  getFreeUsersByProjectId,
 };

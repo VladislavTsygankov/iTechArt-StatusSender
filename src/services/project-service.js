@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import momentService from './moment-service';
 import ProjectUserService from './project-user-service';
 import { Project, ProjectUser, User } from '../db/models';
@@ -7,27 +8,14 @@ const getProjects = async () => {
     include: [
       {
         model: ProjectUser,
-        include: [{ model: User, attributes: ['username', 'id', 'role'] }],
+        include: [{ model: User, attributes: ['id', 'username', 'role'] }],
       },
     ],
   }).map(project => {
-    project.timeForSend = momentService.convertTime(project.timeForSend);
-    
-    let assignedUsers;
-
-    if (project.ProjectUsers.length > 0) {
-      assignedUsers = project.ProjectUsers.map(relation => relation.User.dataValues);
-    }
-
     return {
-      id: project.id,
-      name: project.name,
-      timeForSend: project.timeForSend,
-      greeting: project.greeting,
-      signature: project.signature,
-      addressees: project.addressees,
-      copyAddressees: project.copyAddressees,
-      assignedUsers,
+      ...lodash.pick(project, ['id', 'name', 'greeting', 'signature', 'timeForSend', 'addressees', 'copyAddressees']),
+      assignedUsers:
+        project.ProjectUsers.length > 0 ? project.ProjectUsers.map(relation => relation.User.dataValues) : [],
     };
   });
 };
@@ -38,7 +26,7 @@ const getProjectsByUserId = async id => {
     include: [
       {
         model: Project,
-        attributes: ['name', 'Id'],
+        attributes: ['name', 'id'],
       },
     ],
   }).map(foundRelation => {
@@ -51,53 +39,41 @@ const removeProjectById = async id => {
 };
 
 const createProject = async projectData => {
-  const projectName = projectData.name;
-  const { members } = projectData;
-  let membersList;
-  // вот эта штука временная, просто через постман кидается строка а не массив,
-  // когда буду кидать с клиент массивом будет норм
-
-  if (members) {
-    membersList = members.split(',').map(member => {
-      return +member;
-    });
-  }
-
-  let project = await Project.findOne({ where: { name: projectName } });
+  let project = await Project.findOne({ where: { name: projectData.name } });
 
   if (!project) {
+    projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(projectData.timeForSend);
+
     project = await Project.create({ ...projectData });
 
-    if (membersList) {
-      membersList.forEach(member => {
-        ProjectUserService.createRelation(member, project.dataValues.id);
-      });
-    }
+    projectData.assignedUsers.forEach(member => {
+      ProjectUserService.createRelation(member.id, project.dataValues.id);
+    });
 
-    return project;
+    return {
+      ...lodash.pick(project, ['id', 'name', 'greeting', 'signature', 'timeForSend', 'addressees', 'copyAddressees']),
+      assignedUsers: projectData.assignedUsers,
+    };
   } else {
-    throw new Error(`Project ${projectName} is already exist`);
+    throw new Error(`Project ${projectData.name} is already exist`);
   }
 };
 
 const updateProjectById = async (id, projectData) => {
+  projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(projectData.timeForSend);
+
   await Project.update(projectData, { where: { Id: id } });
 
-  const { members } = projectData;
+  const assignedUsersIds = projectData.assignedUsers.map(user => user.id);
+
+  ProjectUserService.compareAndUpdateRelations(id, assignedUsersIds);
+
   const project = await Project.findById(id);
-  let membersList;
-  project.timeForSend = momentService.convertTime(project.timeForSend);
 
-  // вот эта штука временная, просто через постман кидается строка а не массив,
-  // когда буду кидать с клиент массивом будет норм
-  if (members) {
-    membersList = members.split(',').map(member => {
-      return +member;
-    });
-    ProjectUserService.compareAndUpdateRelations(id, membersList);
-  }
-
-  return project;
+  return {
+    ...lodash.pick(project, ['id', 'name', 'greeting', 'signature', 'timeForSend', 'addressees', 'copyAddressees']),
+    assignedUsers: projectData.assignedUsers,
+  };
 };
 
 export default {
