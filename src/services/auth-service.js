@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import jwtService from './jwt-service';
 import bcrypt from 'bcryptjs';
 import { User } from '../db/models';
@@ -15,9 +16,7 @@ const signIn = async userInfo => {
 
   return {
     user: {
-      username: user.username,
-      role: user.role,
-      id: user.id,
+      ...lodash.pick(user, ['id', 'username', 'role']),
     },
     token: jwtService.genToken(user.id),
   };
