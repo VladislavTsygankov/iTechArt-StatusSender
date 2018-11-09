@@ -1,7 +1,7 @@
 const config = {
   DATABASE: 'StatusSenderDatabase',
-  USERNAME: '',
-  PASSWORD: '',
+  USERNAME: 'SS-server',
+  PASSWORD: 'server',
   PARAMS: {
     dialect: 'mssql',
   },

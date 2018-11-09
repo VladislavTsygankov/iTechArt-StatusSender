@@ -13,9 +13,19 @@ const getProjects = async () => {
     ],
   }).map(project => {
     return {
-      ...lodash.pick(project, ['id', 'name', 'greeting', 'signature', 'timeForSend', 'addressees', 'copyAddressees']),
+      ...lodash.pick(project, [
+        'id',
+        'name',
+        'greeting',
+        'signature',
+        'timeForSend',
+        'addressees',
+        'copyAddressees',
+      ]),
       assignedUsers:
-        project.ProjectUsers.length > 0 ? project.ProjectUsers.map(relation => relation.User.dataValues) : [],
+        project.ProjectUsers.length > 0
+          ? project.ProjectUsers.map(relation => relation.User.dataValues)
+          : [],
     };
   });
 };
@@ -42,7 +52,9 @@ const createProject = async projectData => {
   let project = await Project.findOne({ where: { name: projectData.name } });
 
   if (!project) {
-    projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(projectData.timeForSend);
+    projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(
+      projectData.timeForSend
+    );
 
     project = await Project.create({ ...projectData });
 
@@ -51,29 +63,51 @@ const createProject = async projectData => {
     });
 
     return {
-      ...lodash.pick(project, ['id', 'name', 'greeting', 'signature', 'timeForSend', 'addressees', 'copyAddressees']),
+      ...lodash.pick(project, [
+        'id',
+        'name',
+        'greeting',
+        'signature',
+        'timeForSend',
+        'addressees',
+        'copyAddressees',
+      ]),
       assignedUsers: projectData.assignedUsers,
     };
   } else {
-    throw new Error(`Project ${projectData.name} is already exist`);
+    throw new Error(`Project ${projectData.name} is already exists`);
   }
 };
 
 const updateProjectById = async (id, projectData) => {
-  projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(projectData.timeForSend);
+  projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(
+    projectData.timeForSend
+  );
 
-  await Project.update(projectData, { where: { Id: id } });
+  const isUpdatedProject = await Project.update(projectData, {
+    where: { Id: id },
+  });
 
   const assignedUsersIds = projectData.assignedUsers.map(user => user.id);
 
   ProjectUserService.compareAndUpdateRelations(id, assignedUsersIds);
 
-  const project = await Project.findById(id);
-
-  return {
-    ...lodash.pick(project, ['id', 'name', 'greeting', 'signature', 'timeForSend', 'addressees', 'copyAddressees']),
-    assignedUsers: projectData.assignedUsers,
-  };
+  if (isUpdatedProject[0] === 1) {
+    return {
+      ...lodash.pick(project, [
+        'id',
+        'name',
+        'greeting',
+        'signature',
+        'timeForSend',
+        'addressees',
+        'copyAddressees',
+      ]),
+      assignedUsers: projectData.assignedUsers,
+    };
+  } else {
+    throw new Error(`Project ${projectData.name} can not be updated`);
+  }
 };
 
 export default {

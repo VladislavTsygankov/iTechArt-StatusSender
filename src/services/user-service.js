@@ -22,7 +22,7 @@ const createUser = async userData => {
   if (!user) {
     return await User.create({ ...userData });
   } else {
-    throw new Error('User is already exist');
+    throw new Error('User is already exists');
   }
 };
 
@@ -34,7 +34,10 @@ const changePassword = async (id, password) => {
   password = bcrypt.hashSync(password);
   await User.update({ password }, { where: { Id: id } });
 
-  return await User.findOne({ attributes: ['Id', 'username', 'role'], where: { Id: id } });
+  return await User.findOne({
+    attributes: ['Id', 'username', 'role'],
+    where: { Id: id },
+  });
 };
 
 export default {

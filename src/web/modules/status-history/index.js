@@ -5,7 +5,7 @@ const router = new Router({ prefix: '/statushistory' });
 
 router
   .post('/', StatusController.post)
-  .get('/', StatusController.get)
-  .get('/:projectId', StatusController.getCurrentStatus);
+  .get('/:pageId', StatusController.get)
+  .get('/user_status/:projectId', StatusController.getCurrentStatus);
 
 export default router.routes();

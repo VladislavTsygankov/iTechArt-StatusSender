@@ -1,4 +1,5 @@
 import Koa from 'koa';
+import HttpStatus from 'http-status';
 import cors from '@koa/cors';
 import bodyParser from 'koa-bodyparser';
 import config from './config';
@@ -13,8 +14,18 @@ const app = new Koa();
 
 app.keys = [config.env.jwt.secret];
 
-app.use(cors({origin: checkOrigin}));
+app.use(cors({ origin: checkOrigin }));
 app.use(bodyParser());
+
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    ctx.status = HttpStatus.INTERNAL_SERVER_ERROR;
+    ctx.message = err.message;
+    logger.log(LoggerLevels.ERROR, err);
+  }
+});
 
 app.use(authRouters);
 app.use(apiRouters.routes());
