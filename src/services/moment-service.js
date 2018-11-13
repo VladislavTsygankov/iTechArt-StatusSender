@@ -7,9 +7,7 @@ const convertDate = date => {
 };
 
 const convertTime = time => {
-  return moment(time)
-    .utc()
-    .format(TIME_FORMAT);
+  return moment(time).format(TIME_FORMAT);
 };
 
 const convertTimeFromSecondsToUTC = seconds => {
@@ -25,6 +23,20 @@ const convertTimeFromSeconds = seconds => {
     .startOf('day')
     .seconds(seconds)
     .format(TIME_FORMAT);
+};
+
+const getSecondsFromTime = time => {  
+  return moment.duration(moment(time).format(TIME_FORMAT)).asSeconds();
+};
+
+const getMinutesFromTime = time => {
+  return moment
+    .duration(
+      moment(time)
+        .utc()
+        .format(TIME_FORMAT)
+    )
+    .asMinutes();
 };
 
 const getCurrentDate = () => {
@@ -49,4 +61,6 @@ export default {
   checkWeekend,
   convertTimeFromSecondsToUTC,
   convertTimeFromSeconds,
+  getSecondsFromTime,
+  getMinutesFromTime,
 };

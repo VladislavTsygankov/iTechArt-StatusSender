@@ -42,7 +42,7 @@ const getHistory = async pageId => {
   });
 
   return {
-    statuses: statuses.slice(
+    statuses: statuses.reverse().slice(
       pageId * PAGE_SIZE,
       pageId * PAGE_SIZE + PAGE_SIZE
     ),

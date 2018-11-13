@@ -12,6 +12,8 @@ const getProjects = async () => {
       },
     ],
   }).map(project => {
+    project.timeForSend = momentService.getSecondsFromTime(project.timeForSend);
+
     return {
       ...lodash.pick(project, [
         'id',
@@ -80,13 +82,26 @@ const createProject = async projectData => {
 };
 
 const updateProjectById = async (id, projectData) => {
-  projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(
+  const updatedTimeForSend = momentService.convertTimeFromSecondsToUTC(
     projectData.timeForSend
   );
 
-  const isUpdatedProject = await Project.update(projectData, {
-    where: { Id: id },
-  });
+  const isUpdatedProject = await Project.update(
+    {
+      ...lodash.pick(projectData, [
+        'id',
+        'name',
+        'greeting',
+        'signature',
+        'addressees',
+        'copyAddressees',
+      ]),
+      timeForSend: updatedTimeForSend,
+    },
+    {
+      where: { Id: id },
+    }
+  );
 
   const assignedUsersIds = projectData.assignedUsers.map(user => user.id);
 
@@ -94,7 +109,7 @@ const updateProjectById = async (id, projectData) => {
 
   if (isUpdatedProject[0] === 1) {
     return {
-      ...lodash.pick(project, [
+      ...lodash.pick(projectData, [
         'id',
         'name',
         'greeting',
