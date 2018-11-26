@@ -1,7 +1,9 @@
-const moment = require('moment');
+const date = require('js-joda').LocalDate;
+const time = require('js-joda').LocalTime;
 
-console.log(
-  moment
-    .duration('1970-01-01T21:00:00.000Z')
-    .asMinutes()
-);
+console.log(time.now());
+
+
+const temp = date.now();
+
+console.log(temp._year);

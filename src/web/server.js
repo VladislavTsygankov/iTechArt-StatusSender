@@ -15,13 +15,10 @@ db.authenticate()
       LoggerLevels.INFO,
       `Server is running on port ${config.env.PORT}\n`
     );
-    worker(path.join(__dirname,'../worker/index.js'), (err, result) => {
+    worker(path.join(__dirname, '../worker/index.js'), err => {
       if (err) {
-        return console.error(err);
-      }     
-
-      console.log('Second thread');
-      console.log('A cho tam??', result.isMail);
+        throw new Error('Worker was failed');
+      }
     });
   })
   .catch(err => {

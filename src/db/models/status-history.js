@@ -1,5 +1,6 @@
 import DataTypes from 'sequelize';
 import db from '../db-connection';
+import MomentService from '../../services/moment-service';
 
 const StatusHistory = db.define(
   'StatusHistory',
@@ -17,7 +18,33 @@ const StatusHistory = db.define(
   {
     createdAt: false,
     updatedAt: false,
-  },
+    hooks: {
+      afterFind: statuses => {
+        if (statuses && statuses.length > 0) {
+          return statuses.map(status => {
+            status.time = MomentService.formatTime(status.time);
+
+            return status;
+          });
+        }
+
+        if (statuses) {
+          statuses.time = MomentService.formatTime(statuses.time);
+
+          return statuses;
+        }
+
+        return statuses;
+      },
+    },
+    scopes: {
+      today: {
+        where: {
+          date: MomentService.getCurrentUTCDate().date,
+        },
+      },
+    },
+  }
 );
 
 export default StatusHistory;

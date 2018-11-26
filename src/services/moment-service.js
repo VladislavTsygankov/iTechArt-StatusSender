@@ -1,13 +1,68 @@
 import moment from 'moment';
+import {
+  MAX_TIME,
+  STANDARD_DEVIATION_SECONDS,
+  DEFAULT_DATE,
+  NOTIFICATION_PERIOD_HOURS,
+  TIME_FORMAT,
+} from './constants/moment';
+import { ZonedDateTime } from 'js-joda';
 
-const TIME_FORMAT = 'HH:mm:ss';
+const isMidnight = () => {
+  const currentTime = getSecondsFromTime(moment().utc());
+  const maxTimeInSeconds = getSecondsFromTime(MAX_TIME);
 
-const convertDate = date => {
-  return moment(date);
+  return (
+    currentTime > maxTimeInSeconds - STANDARD_DEVIATION_SECONDS &&
+    currentTime < maxTimeInSeconds + STANDARD_DEVIATION_SECONDS
+  );
 };
 
-const convertTime = time => {
-  return moment(time).format(TIME_FORMAT);
+const checkWeekend = () => {
+  return moment().day() === 0 || moment().day() === 6;
+};
+
+const getCurrentTimeWithDeviation = () => {
+  const currentTimeInSeconds = getSecondsFromTime(new Date());
+
+  return {
+    leftDeviation: convertTimeFromSecondsToUTC(currentTimeInSeconds - STANDARD_DEVIATION_SECONDS),
+    rightDeviation: convertTimeFromSecondsToUTC(currentTimeInSeconds + STANDARD_DEVIATION_SECONDS),
+  };
+};
+
+const getCurrentTimeWithNotificationPeriod = () => {
+  return {
+    currentTime: moment(DEFAULT_DATE)
+      .set({
+        hour: moment().get('hour') - moment().utcOffset() / 60,
+        minute: moment().get('minute'),
+      })
+      .format(),
+    timeWithNotificationPeriod: moment(DEFAULT_DATE)
+      .set({
+        hour: moment().get('hour') - moment().utcOffset() / 60 + NOTIFICATION_PERIOD_HOURS,
+        minute: moment().get('minute'),
+      })
+      .format(),
+  };
+};
+
+const formatTime = time => {
+  console.log(ZonedDateTime.parse(time));
+  
+  return moment(time)
+    .utc()
+    .format(TIME_FORMAT);
+};
+
+const getCurrentUTCDate = () => {
+  const currentUTCDate = moment().utc();
+
+  return {
+    date: currentUTCDate,
+    time: currentUTCDate.format(TIME_FORMAT),
+  };
 };
 
 const convertTimeFromSecondsToUTC = seconds => {
@@ -25,42 +80,18 @@ const convertTimeFromSeconds = seconds => {
     .format(TIME_FORMAT);
 };
 
-const getSecondsFromTime = time => {  
+const getSecondsFromTime = time => {
   return moment.duration(moment(time).format(TIME_FORMAT)).asSeconds();
 };
 
-const getMinutesFromTime = time => {
-  return moment
-    .duration(
-      moment(time)
-        .utc()
-        .format(TIME_FORMAT)
-    )
-    .asMinutes();
-};
-
-const getCurrentDate = () => {
-  return moment().utc();
-};
-
-const getCurrentUTCTime = () => {
-  return moment()
-    .utc()
-    .format(TIME_FORMAT);
-};
-
-const checkWeekend = () => {
-  return moment().day() === 0 || moment().day() === 6;
-};
-
 export default {
-  convertTime,
-  convertDate,
-  getCurrentUTCTime,
-  getCurrentDate,
-  checkWeekend,
+  formatTime,
+  getCurrentUTCDate,
   convertTimeFromSecondsToUTC,
   convertTimeFromSeconds,
   getSecondsFromTime,
-  getMinutesFromTime,
+  getCurrentTimeWithNotificationPeriod,
+  getCurrentTimeWithDeviation,
+  isMidnight,
+  checkWeekend,
 };

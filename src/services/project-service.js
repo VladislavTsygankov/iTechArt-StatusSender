@@ -1,7 +1,8 @@
 import lodash from 'lodash';
 import momentService from './moment-service';
-import ProjectUserService from './project-user-service';
-import { Project, ProjectUser, User } from '../db/models';
+import RelationHelper from './helpers/project-user-helper';
+import { Project, ProjectUser, User, Reminder, StatusHistory } from '../db/models';
+import createIfNotExist from './helpers/create-if-not-exist';
 
 const getProjects = async () => {
   return await Project.findAll({
@@ -11,25 +12,21 @@ const getProjects = async () => {
         include: [{ model: User, attributes: ['id', 'username', 'role'] }],
       },
     ],
-  }).map(project => {
-    project.timeForSend = momentService.getSecondsFromTime(project.timeForSend);
-
-    return {
-      ...lodash.pick(project, [
-        'id',
-        'name',
-        'greeting',
-        'signature',
-        'timeForSend',
-        'addressees',
-        'copyAddressees',
-      ]),
-      assignedUsers:
-        project.ProjectUsers.length > 0
-          ? project.ProjectUsers.map(relation => relation.User.dataValues)
-          : [],
-    };
-  });
+  }).map(project => ({
+    ...lodash.pick(project, [
+      'id',
+      'name',
+      'greeting',
+      'signature',
+      'timeForSend',
+      'addressees',
+      'copyAddressees',
+    ]),
+    assignedUsers:
+      project.ProjectUsers.length > 0
+        ? project.ProjectUsers.map(relation => relation.User.dataValues)
+        : [],
+  }));
 };
 
 const getProjectsByUserId = async id => {
@@ -51,40 +48,30 @@ const removeProjectById = async id => {
 };
 
 const createProject = async projectData => {
-  let project = await Project.findOne({ where: { name: projectData.name } });
+  projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(projectData.timeForSend);
 
-  if (!project) {
-    projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(
-      projectData.timeForSend
-    );
+  const project = await createIfNotExist(Project, { name: projectData.name }, { ...projectData });
 
-    project = await Project.create({ ...projectData });
-
-    projectData.assignedUsers.forEach(member => {
-      ProjectUserService.createRelation(member.id, project.dataValues.id);
-    });
-
-    return {
-      ...lodash.pick(project, [
-        'id',
-        'name',
-        'greeting',
-        'signature',
-        'timeForSend',
-        'addressees',
-        'copyAddressees',
-      ]),
-      assignedUsers: projectData.assignedUsers,
-    };
-  } else {
-    throw new Error(`Project ${projectData.name} is already exists`);
+  if (project) {
+    RelationHelper.createRelations(projectData.assignedUsers.map(member => member.id), project.id);
   }
+
+  return {
+    ...lodash.pick(project, [
+      'id',
+      'name',
+      'greeting',
+      'signature',
+      'timeForSend',
+      'addressees',
+      'copyAddressees',
+    ]),
+    assignedUsers: projectData.assignedUsers,
+  };
 };
 
 const updateProjectById = async (id, projectData) => {
-  const updatedTimeForSend = momentService.convertTimeFromSecondsToUTC(
-    projectData.timeForSend
-  );
+  const updatedTimeForSend = momentService.convertTimeFromSecondsToUTC(projectData.timeForSend);
 
   const isUpdatedProject = await Project.update(
     {
@@ -105,7 +92,7 @@ const updateProjectById = async (id, projectData) => {
 
   const assignedUsersIds = projectData.assignedUsers.map(user => user.id);
 
-  ProjectUserService.compareAndUpdateRelations(id, assignedUsersIds);
+  RelationHelper.compareAndUpdateRelations(id, assignedUsersIds);
 
   if (isUpdatedProject[0] === 1) {
     return {
@@ -125,10 +112,58 @@ const updateProjectById = async (id, projectData) => {
   }
 };
 
+const getNotifiableProjects = async () => {
+  return await Project.scope('timeScope').findAll({
+    attributes: ['name', 'timeForSend'],
+    include: [
+      {
+        model: ProjectUser,
+        attributes: {
+          exclude: ['UserId', 'ProjectId'],
+        },
+        required: true,
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'username'],
+            include: [
+              { model: Reminder, attributes: ['value'], required: true },
+              {
+                model: StatusHistory.scope('today'),
+                required: false,
+                attributes: ['status'],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+};
+
+const getCurrentSendProjects = async () => {
+  return await Project.scope('now').findAll();
+};
+
+const updateProjectSendStatus = async id => {
+  await Project.update({ isSentToday: true }, { fields: ['isSentToday'], where: { Id: id } });
+};
+
+const resetStatusOfProjects = async () => {
+  await Project.update(
+    { isSentToday: false },
+    { fields: ['isSentToday'], where: { isSentToday: true } }
+  );
+};
+
 export default {
   getProjects,
   getProjectsByUserId,
   createProject,
   removeProjectById,
   updateProjectById,
+  getNotifiableProjects,
+  getCurrentSendProjects,
+  updateProjectSendStatus,
+  resetStatusOfProjects,
 };

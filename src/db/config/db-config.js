@@ -4,6 +4,9 @@ const config = {
   PASSWORD: 'server',
   PARAMS: {
     dialect: 'mssql',
+    dialectOptions: {
+      encrypt: true,
+    },
   },
 };
 

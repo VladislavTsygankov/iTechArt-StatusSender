@@ -5,3 +5,7 @@
     [UserId] INT NOT NULL, 
     FOREIGN KEY (UserId) REFERENCES Users (Id)  ON DELETE CASCADE,
 )
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_Reminders_UserId] ON [dbo].[Reminders] ([UserId])

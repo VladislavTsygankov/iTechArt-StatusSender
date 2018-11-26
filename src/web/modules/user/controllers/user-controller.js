@@ -14,12 +14,6 @@ const get = async ctx => {
   }
 };
 
-const getUsersByProjectId = async ctx => {
-  ctx.body = await UserService.getUsersByProjectId(ctx.params.projectId);
-  ctx.status = HttpStatus.OK;
-  logger.log(LoggerLevels.DEBUG, `Users sent: ${JSON.stringify(ctx.body)}`);
-};
-
 const post = async ctx => {
   ctx.body = await UserService.createUser(ctx.request.body);
   ctx.status = HttpStatus.OK;
@@ -33,22 +27,8 @@ const remove = async ctx => {
   logger.log(LoggerLevels.DEBUG, `Deleted user on id=${ctx.params.id}`);
 };
 
-const put = async ctx => {
-  ctx.body = await UserService.changePassword(
-    ctx.user.id,
-    ctx.request.body.password
-  );
-  ctx.status = HttpStatus.ACCEPTED;
-  logger.log(
-    LoggerLevels.DEBUG,
-    `User with id:${ctx.params.id} updated to ${JSON.stringify(ctx.body)}`
-  );
-};
-
 export default {
   get,
   post,
   remove,
-  put,
-  getUsersByProjectId,
 };

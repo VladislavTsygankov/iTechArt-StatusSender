@@ -6,7 +6,7 @@ const ProjectUser = db.define(
   {
     createdAt: false,
     updatedAt: false,
-  },
+  }
 );
 
 export default ProjectUser;

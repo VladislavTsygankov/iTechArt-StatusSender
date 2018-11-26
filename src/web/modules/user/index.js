@@ -7,9 +7,7 @@ const router = new Router({
 
 router
   .get('/', userController.get)
-  .get('/:projectId/projects', userController.getUsersByProjectId)
   .post('/', userController.post)
-  .delete('/:id', userController.remove)
-  .put('/', userController.put);
+  .delete('/:id', userController.remove);
 
 export default router.routes();
