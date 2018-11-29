@@ -1,9 +1,23 @@
-const date = require('js-joda').LocalDate;
-const time = require('js-joda').LocalTime;
+const LocalDate = require('js-joda').LocalDate;
+const LocalTime = require('js-joda').LocalTime;
+const LocalDateTime = require('js-joda').LocalDateTime;
+const ZonedDateTime = require('js-joda').ZonedDateTime;
+const nativeJs = require('js-joda').nativeJs;
+const lodash = require('lodash');
 
-console.log(time.now());
+const ZoneId = require('js-joda').ZoneId;
 
+const ZoneOffset = require('js-joda').ZoneOffset;
 
-const temp = date.now();
+const time1 = LocalTime.of(22, 55, 3);
+const time2 = LocalTime.of(23, 55, 12);
 
-console.log(temp._year);
+console.log(time1, 'and', time2);
+
+console.log(
+  time1.toSecondOfDay() >= time2.toSecondOfDay() - 30 &&
+    time1.toSecondOfDay() <= time2.toSecondOfDay() + 30
+);
+
+console.log(time1 - time2);
+

@@ -8,5 +8,4 @@
 
 GO
 
---CREATE INDEX [IX_Users_Id] ON [dbo].[Users] ([Id])
 CREATE NONCLUSTERED INDEX [IX_Users_Username] ON [dbo].[Users] ([Username])

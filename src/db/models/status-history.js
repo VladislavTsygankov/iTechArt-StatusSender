@@ -23,6 +23,7 @@ const StatusHistory = db.define(
         if (statuses && statuses.length > 0) {
           return statuses.map(status => {
             status.time = MomentService.formatTime(status.time);
+            status.date = MomentService.formatDate(status.date);
 
             return status;
           });
@@ -30,7 +31,7 @@ const StatusHistory = db.define(
 
         if (statuses) {
           statuses.time = MomentService.formatTime(statuses.time);
-
+          statuses.date = MomentService.formatDate(statuses.date);
           return statuses;
         }
 

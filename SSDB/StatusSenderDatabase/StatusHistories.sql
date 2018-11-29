@@ -9,3 +9,11 @@
     FOREIGN KEY (ProjectId) REFERENCES Projects (Id)  ON DELETE CASCADE, 
     FOREIGN KEY (UserId) REFERENCES Users (Id)  ON DELETE CASCADE, 
 )
+
+GO
+
+CREATE INDEX [IX_StatusHistories_Computed] ON [dbo].[StatusHistories] (Date, UserId, ProjectId)
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_StatusHistories_UserId] ON [dbo].[StatusHistories] ([UserId])

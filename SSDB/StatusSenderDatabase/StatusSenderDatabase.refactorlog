@@ -77,4 +77,25 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="isSentToday" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="884ddb23-ce81-4dea-81f6-fc81d9f5aa2b" ChangeDateTime="11/26/2018 10:16:55">
+    <Property Name="ElementName" Value="[dbo].[Projects].[isSentToday]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Projects]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="lastSendDate" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bef2cbb0-6762-45aa-b88e-646859206892" ChangeDateTime="11/26/2018 10:17:28">
+    <Property Name="ElementName" Value="[dbo].[Projects].[lastSendDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Projects]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="lastSentDate" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="91fb6df0-80d1-4fdd-86e1-1d9cddeffc1a" ChangeDateTime="11/26/2018 10:23:12">
+    <Property Name="ElementName" Value="[dbo].[Projects].[lastSentDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Projects]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LastSentDate" />
+  </Operation>
 </Operations>

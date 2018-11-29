@@ -7,9 +7,17 @@
     [Signature] NVARCHAR(150) NULL, 
     [Addressees] NVARCHAR(200) NULL,
     [CopyAddressees] NVARCHAR(200) NULL, 
-    [isSentToday] BIT NOT NULL DEFAULT 0,
+    [LastSentDate] DATE NULL ,
 )
 
 GO
 
---CREATE CLUSTERED INDEX [IX_Projects_Id] ON [dbo].[Projects] ([Id])
+CREATE NONCLUSTERED INDEX [IX_Projects_Name] ON [dbo].[Projects] ([Name])
+
+GO 
+
+CREATE NONCLUSTERED INDEX [IX_Projects_TimForSend] ON [dbo].[Projects] ([TimeForSend])
+
+GO 
+
+CREATE NONCLUSTERED  INDEX [IX_Projects_TimeForSend] ON [dbo].[Projects] ([LastSentDate])

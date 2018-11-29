@@ -1,97 +1,97 @@
-import moment from 'moment';
 import {
-  MAX_TIME,
+  nativeJs,
+  LocalDateTime,
+  LocalDate,
+  LocalTime,
+  ZonedDateTime,
+  ZoneId,
+  DayOfWeek,
+  ZoneOffset,
+} from 'js-joda';
+import {
   STANDARD_DEVIATION_SECONDS,
   DEFAULT_DATE,
   NOTIFICATION_PERIOD_HOURS,
-  TIME_FORMAT,
 } from './constants/moment';
-import { ZonedDateTime } from 'js-joda';
-
-const isMidnight = () => {
-  const currentTime = getSecondsFromTime(moment().utc());
-  const maxTimeInSeconds = getSecondsFromTime(MAX_TIME);
-
-  return (
-    currentTime > maxTimeInSeconds - STANDARD_DEVIATION_SECONDS &&
-    currentTime < maxTimeInSeconds + STANDARD_DEVIATION_SECONDS
-  );
-};
 
 const checkWeekend = () => {
-  return moment().day() === 0 || moment().day() === 6;
+  const day = LocalDate.now().dayOfWeek();
+
+  return day === DayOfWeek.SATURDAY || day === DayOfWeek.SUNDAY;
+};
+
+const getUTCOffset = () => {
+  return LocalTime.now()._hour - LocalTime.now(ZoneOffset.UTC)._hour;
 };
 
 const getCurrentTimeWithDeviation = () => {
-  const currentTimeInSeconds = getSecondsFromTime(new Date());
+  const currentTime = LocalTime.now();
+  const defaultDate = LocalDate.parse(DEFAULT_DATE).atTime(
+    currentTime._hour,
+    currentTime._minute,
+    currentTime._second,
+    currentTime._nano
+  );
 
   return {
-    leftDeviation: convertTimeFromSecondsToUTC(currentTimeInSeconds - STANDARD_DEVIATION_SECONDS),
-    rightDeviation: convertTimeFromSecondsToUTC(currentTimeInSeconds + STANDARD_DEVIATION_SECONDS),
+    leftDeviation: new Date(defaultDate.minusSeconds(STANDARD_DEVIATION_SECONDS)),
+    rightDeviation: new Date(defaultDate.plusSeconds(STANDARD_DEVIATION_SECONDS)),
   };
 };
 
 const getCurrentTimeWithNotificationPeriod = () => {
+  const currentTime = LocalTime.now();
+  const defaultDate = LocalDate.parse(DEFAULT_DATE).atTime(
+    currentTime._hour,
+    currentTime._minute,
+    currentTime._second,
+    currentTime._nano
+  );
+
   return {
-    currentTime: moment(DEFAULT_DATE)
-      .set({
-        hour: moment().get('hour') - moment().utcOffset() / 60,
-        minute: moment().get('minute'),
-      })
-      .format(),
-    timeWithNotificationPeriod: moment(DEFAULT_DATE)
-      .set({
-        hour: moment().get('hour') - moment().utcOffset() / 60 + NOTIFICATION_PERIOD_HOURS,
-        minute: moment().get('minute'),
-      })
-      .format(),
+    currentTime: new Date(defaultDate),
+    timeWithNotificationPeriod: new Date(defaultDate.plusHours(NOTIFICATION_PERIOD_HOURS)),
   };
 };
 
 const formatTime = time => {
-  console.log(ZonedDateTime.parse(time));
-  
-  return moment(time)
-    .utc()
-    .format(TIME_FORMAT);
+  const formatTime = LocalTime.from(nativeJs(time));
+
+  return LocalTime.of(formatTime._hour, formatTime._minute, formatTime._second);
+};
+
+const formatTimeFromUTC = time => {
+  const formatTime = LocalTime.from(nativeJs(time)).minusHours(
+    LocalTime.now()._hour - LocalTime.now(ZoneOffset.UTC)._hour
+  );
+
+  return LocalTime.of(formatTime._hour, formatTime._minute, formatTime._second);
+};
+
+const formatDate = date => {
+  return LocalDate.from(nativeJs(date));
+};
+
+const convertTimeToUTC = time => {
+  const convertTime = LocalTime.parse(time);
+
+  return convertTime.minusHours(getUTCOffset()).toString();
 };
 
 const getCurrentUTCDate = () => {
-  const currentUTCDate = moment().utc();
-
   return {
-    date: currentUTCDate,
-    time: currentUTCDate.format(TIME_FORMAT),
+    date: ZonedDateTime.now(ZoneId.UTC)._dateTime._date.toString(),
+    time: LocalTime.now(ZoneOffset.UTC).toString(),
   };
-};
-
-const convertTimeFromSecondsToUTC = seconds => {
-  return moment()
-    .startOf('day')
-    .seconds(seconds)
-    .utc()
-    .format(TIME_FORMAT);
-};
-
-const convertTimeFromSeconds = seconds => {
-  return moment()
-    .startOf('day')
-    .seconds(seconds)
-    .format(TIME_FORMAT);
-};
-
-const getSecondsFromTime = time => {
-  return moment.duration(moment(time).format(TIME_FORMAT)).asSeconds();
 };
 
 export default {
   formatTime,
+  formatDate,
+  formatTimeFromUTC,
   getCurrentUTCDate,
-  convertTimeFromSecondsToUTC,
-  convertTimeFromSeconds,
-  getSecondsFromTime,
   getCurrentTimeWithNotificationPeriod,
   getCurrentTimeWithDeviation,
-  isMidnight,
   checkWeekend,
+  convertTimeToUTC,
 };

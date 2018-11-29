@@ -11,14 +11,13 @@ db.authenticate()
   .then(() => {
     logger.log(LoggerLevels.INFO, 'Connected to Status Sender database');
     http.createServer(app.callback()).listen(config.env.PORT);
-    logger.log(
-      LoggerLevels.INFO,
-      `Server is running on port ${config.env.PORT}\n`
-    );
-    worker(path.join(__dirname, '../worker/index.js'), err => {
+    logger.log(LoggerLevels.INFO, `Server is running on port ${config.env.PORT}\n`);
+    worker(path.join(__dirname, '../worker/index.js'), (err, result) => {
       if (err) {
         throw new Error('Worker was failed');
       }
+
+      console.log(result.message);
     });
   })
   .catch(err => {

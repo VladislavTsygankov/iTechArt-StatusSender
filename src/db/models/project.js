@@ -1,7 +1,6 @@
 import DataTypes from 'sequelize';
 import db from '../db-connection';
 import momentService from '../../services/moment-service';
-import { Op } from 'sequelize';
 
 const Project = db.define(
   'Project',
@@ -30,8 +29,8 @@ const Project = db.define(
     copyAddressees: {
       type: db.Sequelize.STRING(200),
     },
-    isSentToday: {
-      type: db.Sequelize.BOOLEAN,
+    lastSentDate: {
+      type: db.Sequelize.DATEONLY,
     },
   },
   {
@@ -41,43 +40,21 @@ const Project = db.define(
       afterFind: projects => {
         if (projects && projects.length > 0) {
           return projects.map(project => {
-            project.timeForSend = momentService.getSecondsFromTime(project.timeForSend);
+            project.timeForSend = momentService.formatTime(project.timeForSend);
           });
         }
 
         return projects;
       },
-    },
-    scopes: {
-      timeScope: {
-        where: {
-          [Op.or]: [
-            {
-              timeForSend: {
-                [Op.between]: [
-                  momentService.getCurrentTimeWithNotificationPeriod().currentTime,
-                  momentService.getCurrentTimeWithNotificationPeriod().timeWithNotificationPeriod,
-                ],
-              },
-            },
-            {
-              isSentToday: false,
-              timeForSend: {
-                [Op.lte]: momentService.getCurrentTimeWithNotificationPeriod().currentTime,
-              },
-            },
-          ],
-        },
+      beforeCreate: project => {
+        project.timeForSend = momentService.convertTimeToUTC(project.timeForSend);
+
+        return project;
       },
-      now: {
-        where: {
-          timeForSend: {
-            [Op.between]: [
-              momentService.getCurrentTimeWithDeviation().leftDeviation,
-              momentService.getCurrentTimeWithDeviation().rightDeviation,
-            ],
-          },
-        },
+      beforeBulkUpdate: ({ attributes }) => {
+        attributes.timeForSend = momentService.convertTimeToUTC(attributes.timeForSend);
+
+        return attributes;
       },
     },
   }

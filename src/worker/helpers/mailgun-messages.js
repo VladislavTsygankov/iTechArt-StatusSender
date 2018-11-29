@@ -1,16 +1,13 @@
-import StatusService from '../../services/status-history-service';
 import { MAIL_DOMAIN_ITECHART, ONLY_WORDS_REGULAR_EXP } from '../constants/mailgun';
 import momentService from '../../services/moment-service';
 
-const createTextMessage = async ({ greeting, signature }) => {
-  const statuses = await StatusService.getTodaysStatuses();
-
+const createTextMessage = ({ greeting, signature, statuses }) => {
   const statusesText = statuses
     .map(status => `${status.User.username.toUpperCase()} : \n ${status.status}`)
-    .join('\n');
+    .join('\n\n');
 
   return `${greeting} \n ${
-    momentService.getCurrentUTCDate().date.format('DD/MM/YY')
+    momentService.getCurrentUTCDate().date
   } \n ${statusesText} \n ${signature} \n`;
 };
 

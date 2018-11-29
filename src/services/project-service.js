@@ -1,4 +1,5 @@
 import lodash from 'lodash';
+import { Op } from 'sequelize';
 import momentService from './moment-service';
 import RelationHelper from './helpers/project-user-helper';
 import { Project, ProjectUser, User, Reminder, StatusHistory } from '../db/models';
@@ -48,8 +49,6 @@ const removeProjectById = async id => {
 };
 
 const createProject = async projectData => {
-  projectData.timeForSend = momentService.convertTimeFromSecondsToUTC(projectData.timeForSend);
-
   const project = await createIfNotExist(Project, { name: projectData.name }, { ...projectData });
 
   if (project) {
@@ -62,29 +61,17 @@ const createProject = async projectData => {
       'name',
       'greeting',
       'signature',
-      'timeForSend',
       'addressees',
       'copyAddressees',
     ]),
     assignedUsers: projectData.assignedUsers,
+    timeForSend: projectData.timeForSend,
   };
 };
 
 const updateProjectById = async (id, projectData) => {
-  const updatedTimeForSend = momentService.convertTimeFromSecondsToUTC(projectData.timeForSend);
-
   const isUpdatedProject = await Project.update(
-    {
-      ...lodash.pick(projectData, [
-        'id',
-        'name',
-        'greeting',
-        'signature',
-        'addressees',
-        'copyAddressees',
-      ]),
-      timeForSend: updatedTimeForSend,
-    },
+    { ...projectData },
     {
       where: { Id: id },
     }
@@ -96,15 +83,7 @@ const updateProjectById = async (id, projectData) => {
 
   if (isUpdatedProject[0] === 1) {
     return {
-      ...lodash.pick(projectData, [
-        'id',
-        'name',
-        'greeting',
-        'signature',
-        'timeForSend',
-        'addressees',
-        'copyAddressees',
-      ]),
+      ...projectData,
       assignedUsers: projectData.assignedUsers,
     };
   } else {
@@ -113,8 +92,25 @@ const updateProjectById = async (id, projectData) => {
 };
 
 const getNotifiableProjects = async () => {
-  return await Project.scope('timeScope').findAll({
+  return await Project.findAll({
     attributes: ['name', 'timeForSend'],
+    where: {
+      [Op.or]: [
+        {
+          timeForSend: {
+            [Op.between]: [
+              momentService.getCurrentTimeWithNotificationPeriod().currentTime,
+              momentService.getCurrentTimeWithNotificationPeriod().timeWithNotificationPeriod,
+            ],
+          },
+        },
+        {
+          lastSentDate: {
+            [Op.lt]: momentService.getCurrentUTCDate().date,
+          },
+        },
+      ],
+    },
     include: [
       {
         model: ProjectUser,
@@ -142,17 +138,33 @@ const getNotifiableProjects = async () => {
 };
 
 const getCurrentSendProjects = async () => {
-  return await Project.scope('now').findAll();
+  return await Project.findAll({
+    where: {
+      timeForSend: {
+        [Op.and]: {
+          [Op.gte]: momentService.getCurrentTimeWithDeviation().leftDeviation,
+          [Op.lte]: momentService.getCurrentTimeWithDeviation().rightDeviation,
+        },
+      },
+    },
+    include: [
+      {
+        model: StatusHistory,
+        required: false,
+        where: {
+          date: momentService.getCurrentUTCDate().date,
+        },
+        attributes: ['status'],
+        include: [{ model: User, attributes: ['username'] }],
+      },
+    ],
+  });
 };
 
-const updateProjectSendStatus = async id => {
-  await Project.update({ isSentToday: true }, { fields: ['isSentToday'], where: { Id: id } });
-};
-
-const resetStatusOfProjects = async () => {
+const updateLastSendDate = async id => {
   await Project.update(
-    { isSentToday: false },
-    { fields: ['isSentToday'], where: { isSentToday: true } }
+    { lastSendDate: momentService.getCurrentUTCDate().date },
+    { where: { Id: id }, fields: ['LastSentDate'] }
   );
 };
 
@@ -164,6 +176,5 @@ export default {
   updateProjectById,
   getNotifiableProjects,
   getCurrentSendProjects,
-  updateProjectSendStatus,
-  resetStatusOfProjects,
+  updateLastSendDate,
 };

@@ -20,7 +20,9 @@ const Reminder = db.define(
       afterFind: reminders => {
         if (reminders && reminders.length > 0) {
           return reminders.map(reminder => {
-            reminder.value = MomentService.formatTime(reminder.value);
+            reminder.value = MomentService.formatTimeFromUTC(reminder.value);
+
+            return reminder;
           });
         }
 
