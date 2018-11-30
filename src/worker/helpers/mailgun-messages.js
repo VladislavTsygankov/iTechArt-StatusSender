@@ -12,10 +12,12 @@ const createTextMessage = ({ greeting, signature, statuses }) => {
 };
 
 const getValidAddresseesString = addresseesString => {
-  return addresseesString
-    .match(ONLY_WORDS_REGULAR_EXP)
-    .map(address => `${address}${MAIL_DOMAIN_ITECHART}`)
-    .join(', ');
+  if (addresseesString.length > 0) {
+    return addresseesString
+      .match(ONLY_WORDS_REGULAR_EXP)
+      .map(address => `${address}${MAIL_DOMAIN_ITECHART}`)
+      .join(', ');
+  }
 };
 
 export { createTextMessage, getValidAddresseesString };

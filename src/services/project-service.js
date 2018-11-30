@@ -125,7 +125,10 @@ const getNotifiableProjects = async () => {
             include: [
               { model: Reminder, attributes: ['value'], required: true },
               {
-                model: StatusHistory.scope('today'),
+                model: StatusHistory,
+                where: {
+                  date: momentService.getCurrentUTCDate().date,
+                },
                 required: false,
                 attributes: ['status'],
               },

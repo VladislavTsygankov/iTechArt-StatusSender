@@ -38,13 +38,6 @@ const StatusHistory = db.define(
         return statuses;
       },
     },
-    scopes: {
-      today: {
-        where: {
-          date: MomentService.getCurrentUTCDate().date,
-        },
-      },
-    },
   }
 );
 
