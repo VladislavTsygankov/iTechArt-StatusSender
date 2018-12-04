@@ -7,7 +7,7 @@ const getProjectsToSend = async () => {
 
   projects.forEach(project => {
     MailgunService.sendProjectStatus(project);
-    ProjectService.updateLastSendDate(project.id);
+    ProjectService.updateLastSentDate(project.id);
   });
 };
 
@@ -32,4 +32,13 @@ const getNotificationsToSend = async () => {
   });
 };
 
-export { getProjectsToSend, getNotificationsToSend };
+const sendMissedProjects = async () => {
+  const projects = await ProjectService.getMissedProjects();
+
+  projects.forEach(project => {
+    MailgunService.sendProjectStatus(project);
+    ProjectService.updateLastSentDate(project.id);
+  });
+};
+
+export { getProjectsToSend, getNotificationsToSend, sendMissedProjects };

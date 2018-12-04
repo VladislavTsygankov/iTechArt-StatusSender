@@ -17,7 +17,7 @@ const getValidAddresseesString = addresseesString => {
       .match(ONLY_WORDS_REGULAR_EXP)
       .map(address => `${address}${MAIL_DOMAIN_ITECHART}`)
       .join(', ');
-  }
+  } else return '';
 };
 
 export { createTextMessage, getValidAddresseesString };

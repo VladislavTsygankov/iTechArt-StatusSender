@@ -1,4 +1,8 @@
-import { getProjectsToSend, getNotificationsToSend } from './worker-service/check-time';
+import {
+  getProjectsToSend,
+  getNotificationsToSend,
+  sendMissedProjects,
+} from './worker-service/check-time';
 import { REQUEST_DELAY } from './constants/worker';
 
 setInterval(() => {
@@ -6,3 +10,5 @@ setInterval(() => {
 
   getNotificationsToSend();
 }, REQUEST_DELAY);
+
+sendMissedProjects();

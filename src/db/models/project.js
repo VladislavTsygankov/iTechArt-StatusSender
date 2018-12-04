@@ -41,6 +41,8 @@ const Project = db.define(
         if (projects && projects.length > 0) {
           return projects.map(project => {
             project.timeForSend = momentService.formatTime(project.timeForSend);
+
+            return project;
           });
         }
 
@@ -52,7 +54,9 @@ const Project = db.define(
         return project;
       },
       beforeBulkUpdate: ({ attributes }) => {
-        attributes.timeForSend = momentService.convertTimeToUTC(attributes.timeForSend);
+        if (attributes.timeForSend) {
+          attributes.timeForSend = momentService.convertTimeToUTC(attributes.timeForSend);
+        }
 
         return attributes;
       },

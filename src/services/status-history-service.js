@@ -65,6 +65,7 @@ const getCurrentStatus = async (projectId, userId) => {
   return status;
 };
 
+
 export default {
   createStatus,
   getHistory,

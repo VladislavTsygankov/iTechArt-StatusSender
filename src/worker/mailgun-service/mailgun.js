@@ -23,17 +23,22 @@ const sendProjectStatus = ({
   signature,
   StatusHistories,
 }) => {
-  return sendMail({
+  const message = {
     from: FROM_STATUS_SENDER,
     to: getValidAddresseesString(addressees),
-    cc: getValidAddresseesString(copyAddressees),
     subject: `${name} project status on ${momentService.getCurrentUTCDate().date}`,
     text: createTextMessage({
       greeting,
       signature,
       statuses: StatusHistories,
     }),
-  });
+  };
+
+  if(copyAddressees.length > 0) {
+    message.copyAddressees = getValidAddresseesString(copyAddressees);
+  }
+
+  return sendMail(message);
 };
 
 const sendMail = data => {

@@ -5,6 +5,9 @@ obj/
 .vs/
 .vscode/
 
+
+src/worker/config.js
+
 *.user
 *.dbmdl
 *.jfm

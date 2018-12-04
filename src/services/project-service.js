@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import { Op } from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 import momentService from './moment-service';
 import RelationHelper from './helpers/project-user-helper';
 import { Project, ProjectUser, User, Reminder, StatusHistory } from '../db/models';
@@ -95,21 +95,12 @@ const getNotifiableProjects = async () => {
   return await Project.findAll({
     attributes: ['name', 'timeForSend'],
     where: {
-      [Op.or]: [
-        {
-          timeForSend: {
-            [Op.between]: [
-              momentService.getCurrentTimeWithNotificationPeriod().currentTime,
-              momentService.getCurrentTimeWithNotificationPeriod().timeWithNotificationPeriod,
-            ],
-          },
-        },
-        {
-          lastSentDate: {
-            [Op.lt]: momentService.getCurrentUTCDate().date,
-          },
-        },
-      ],
+      timeForSend: {
+        [Op.between]: [
+          momentService.getCurrentTimeWithNotificationPeriod().currentTime,
+          momentService.getCurrentTimeWithNotificationPeriod().timeWithNotificationPeriod,
+        ],
+      },
     },
     include: [
       {
@@ -141,12 +132,14 @@ const getNotifiableProjects = async () => {
 };
 
 const getCurrentSendProjects = async () => {
+  const currentTime = momentService.getCurrentTimeWithDeviation();
+
   return await Project.findAll({
     where: {
       timeForSend: {
         [Op.and]: {
-          [Op.gte]: momentService.getCurrentTimeWithDeviation().leftDeviation,
-          [Op.lte]: momentService.getCurrentTimeWithDeviation().rightDeviation,
+          [Op.gte]: currentTime.leftDeviation,
+          [Op.lte]: currentTime.rightDeviation,
         },
       },
     },
@@ -164,11 +157,45 @@ const getCurrentSendProjects = async () => {
   });
 };
 
-const updateLastSendDate = async id => {
-  await Project.update(
-    { lastSendDate: momentService.getCurrentUTCDate().date },
-    { where: { Id: id }, fields: ['LastSentDate'] }
+const updateLastSentDate = async id => {
+  return await Project.update(
+    { lastSentDate: momentService.getCurrentUTCDate().date },
+    { where: { Id: id }, fields: ['lastSentDate'] }
   );
+};
+
+const getMissedProjects = async () => {
+  const todaysDateTime = momentService.getCurrentUTCDate();
+
+  return await Project.findAll({
+    where: {
+      [Op.and]: {
+        lastSentDate: {
+          [Op.lt]: todaysDateTime.date,
+        },
+
+        [Op.not]: {
+          [Op.and]: {
+            lastSentDate: momentService.getYesterdayDate(),
+            timeForSend: {
+              [Op.gt]: todaysDateTime.time,
+            },
+          },
+        },
+      },
+    },
+    include: [
+      {
+        model: StatusHistory,
+        where: {
+          date: {
+            [Op.gte]: sequelize.col('Project.lastSentDate'),
+          },
+        },
+        include: [{ model: User, attributes: ['username'] }],
+      },
+    ],
+  });
 };
 
 export default {
@@ -179,5 +206,6 @@ export default {
   updateProjectById,
   getNotifiableProjects,
   getCurrentSendProjects,
-  updateLastSendDate,
+  updateLastSentDate,
+  getMissedProjects,
 };

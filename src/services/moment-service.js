@@ -1,6 +1,5 @@
 import {
   nativeJs,
-  LocalDateTime,
   LocalDate,
   LocalTime,
   ZonedDateTime,
@@ -69,7 +68,7 @@ const formatTimeFromUTC = time => {
 };
 
 const formatDate = date => {
-  return LocalDate.from(nativeJs(date));
+  return LocalDate.from(nativeJs(date)).toString();
 };
 
 const convertTimeToUTC = time => {
@@ -85,6 +84,10 @@ const getCurrentUTCDate = () => {
   };
 };
 
+const getYesterdayDate = () => {
+  return LocalDate.now().minusDays(1).toString();
+};
+
 export default {
   formatTime,
   formatDate,
@@ -94,4 +97,5 @@ export default {
   getCurrentTimeWithDeviation,
   checkWeekend,
   convertTimeToUTC,
+  getYesterdayDate,
 };
